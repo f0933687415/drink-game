@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>飲料店地獄模式｜試玩版</title>
+<style>
+:root{
+  --bg1:#fffaf4; --bg2:#ecd8c0; --paper:#fffdf9; --ink:#5d4134;
+  --muted:#96715b; --line:#e6d0b9; --dark:#2a2725; --accent:#5d4134;
+  --danger:#c65748; --ok:#315f48;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Noto Sans TC",sans-serif}
+body{background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--ink)}
+button{font:inherit}
+.wrap{max-width:460px;margin:0 auto;padding:12px 12px 28px}
+.card{background:rgba(255,255,255,.86);border:1px solid var(--line);border-radius:24px;box-shadow:0 10px 30px rgba(93,65,52,.08)}
+.cover{padding:14px;text-align:center}
+.cover .eyebrow{font-size:11px;font-weight:900;letter-spacing:.14em;color:var(--muted)}
+.cover h1{font-size:25px;margin:4px 0 2px}
+.cover p{margin:0;color:var(--muted);font-size:13px}
+.hud{display:none;background:linear-gradient(180deg,#322e2b,#23201e);color:#fff;border-radius:18px;padding:8px 5px;margin-top:9px}
+.hudgrid{display:grid;grid-template-columns:repeat(3,1fr)}
+.hudcell{text-align:center}
+.hudcell+.hudcell{border-left:1px solid rgba(255,255,255,.12)}
+.hudlabel{font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,.55)}
+.hudbig{font-size:21px;font-weight:900}
+.stage{margin-top:9px;padding:11px;min-height:660px}
+.intro,.result{min-height:620px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.intro .emoji,.result .emoji{font-size:66px}
+.intro h2,.result h2{margin:14px 0 4px}
+.intro h2{font-size:24px}.result h2{font-size:29px}
+.intro p{font-size:14px;line-height:1.65;color:var(--muted)}
+.note{margin-top:9px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 13px;font-size:13px;font-weight:900}
+.alert{background:var(--ink);color:#fff;border-radius:14px;padding:9px 10px;text-align:center;font-weight:900;font-size:12px}
+.alert.danger{background:var(--danger)}
+.rowhead{display:flex;justify-content:space-between;align-items:center;margin-top:9px}
+.rowhead b{font-size:11px;letter-spacing:.08em}
+.badge{font-size:10px;background:#f1e4d6;border-radius:999px;padding:5px 8px}
+.queue{display:flex;gap:8px;overflow-x:auto;min-height:111px;padding:6px 1px}
+.ticket{
+  min-width:148px;border:1px solid var(--line);border-radius:16px;background:#fffdf9;
+  padding:9px;text-align:left;box-shadow:0 4px 0 rgba(93,65,52,.06)
+}
+.ticket.active{outline:3px solid var(--accent);transform:translateY(-1px)}
+.ticket.urgent{background:#fff4f1;border-color:#d68777}
+.ticket-top{display:flex;justify-content:space-between;font-size:10px}
+.ticket-drink{font-size:12px;font-weight:900;margin-top:4px}
+.ticket-meta{font-size:10px;line-height:1.5}
+.bar{height:5px;background:#ead9c8;border-radius:999px;overflow:hidden;margin-top:7px}
+.bar>span{display:block;height:100%;background:#98654a}
+.work{margin-top:7px;background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:22px;padding:10px}
+.now{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.now small{display:block;font-size:10px;font-weight:900;letter-spacing:.08em;color:var(--muted)}
+#current{font-size:14px;font-weight:900;margin-top:2px}
+.station{font-size:10px;font-weight:900;background:#f1e3d5;border-radius:10px;padding:5px 8px}
+.group{margin-top:8px;background:#fffaf6;border:1px solid #ead8c5;border-radius:16px;padding:8px}
+.group-title{font-size:11px;font-weight:900;color:#80604c;margin-bottom:6px}
+.choices{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.choice{
+  min-height:42px;border:1px solid #ddc8b4;border-radius:12px;background:#fff;color:#674a3b;
+  font-size:10.5px;font-weight:900;padding:4px 2px;transition:.08s
+}
+.choice:active{transform:scale(.96)}
+.choice.sel{background:var(--accent);color:#fff;border-color:var(--accent);outline:3px solid rgba(93,65,52,.15)}
+.choice.sel::before{content:"✓ ";font-weight:900}
+.serve{
+  width:100%;min-height:50px;border:0;border-radius:16px;margin-top:10px;
+  background:#d8c6b7;color:#7d6658;font-weight:900;font-size:15px;transition:.1s
+}
+.serve.ready{background:var(--accent);color:#fff;box-shadow:0 6px 0 #412d25}
+.start{
+  width:100%;min-height:52px;margin-top:9px;border:0;border-radius:16px;
+  background:var(--accent);color:#fff;font-weight:900;font-size:16px
+}
+.status{text-align:center;min-height:22px;font-size:13px;color:var(--muted);margin-top:5px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;margin-top:15px}
+.stat{background:#fff;border-radius:16px;padding:10px}.stat small{font-size:10px;color:var(--muted)}.stat b{display:block;margin-top:3px}
+.quote{margin-top:13px;width:100%;background:var(--accent);color:#fff;border-radius:16px;padding:13px;font-weight:900}
+.challenge{margin-top:11px;font-size:14px;font-weight:900}
+.hidden{display:none!important}
+@media(max-width:390px){
+  .choice{font-size:9.5px;min-height:40px}
+  .stage{min-height:640px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section id="cover" class="card cover">
+    <div class="eyebrow">🧋 SURVIVAL MODE</div>
+    <h1>飲料店地獄模式</h1>
+    <p>撐過尖峰 60 秒，你就能下班。</p>
+  </section>
+
+  <section id="hud" class="hud">
+    <div class="hudgrid">
+      <div class="hudcell"><div class="hudlabel">SURVIVE</div><div><span id="time" class="hudbig">0.0</span><span style="font-size:11px;color:#aaa">s</span></div></div>
+      <div class="hudcell"><div class="hudlabel">SERVED</div><div><span id="good" class="hudbig">0</span><span style="font-size:11px;color:#aaa"> 杯</span></div></div>
+      <div class="hudcell"><div class="hudlabel">PATIENCE</div><div id="life" style="font-size:18px;margin-top:3px">❤️❤️❤️</div></div>
+    </div>
+  </section>
+
+  <section class="card stage">
+    <div id="intro" class="intro">
+      <div class="emoji">😌🧋</div>
+      <h2>現在看起來很和平。</h2>
+      <p>但尖峰快到了。<br>每張訂單只有 <b>16 秒</b>，做錯或拖太久都會扣耐心。</p>
+      <div class="note">❤️ 歸零＝全店爆炸 💥</div>
+    </div>
+
+    <div id="game" class="hidden">
+      <div id="alert" class="alert">😌 店裡目前很和平</div>
+
+      <div class="rowhead"><b>ORDER QUEUE</b><span id="queueCount" class="badge">0 張訂單</span></div>
+      <div id="queue" class="queue"></div>
+
+      <div class="work">
+        <div class="now">
+          <div><small>NOW MAKING</small><div id="current">先點一張訂單</div></div>
+          <div class="station">吧台 A</div>
+        </div>
+
+        <div class="group"><div class="group-title">① 品項</div><div id="tea" class="choices"></div></div>
+        <div class="group"><div class="group-title">② 甜度</div><div id="sugar" class="choices"></div></div>
+        <div class="group"><div class="group-title">③ 冰塊</div><div id="ice" class="choices"></div></div>
+        <div class="group"><div class="group-title">④ 加料</div><div id="top" class="choices"></div></div>
+
+        <button id="serve" class="serve" type="button">請完成四區設定</button>
+      </div>
+    </div>
+
+    <div id="result" class="result hidden">
+      <div id="rEmoji" class="emoji"></div>
+      <h2 id="rHead"></h2>
+      <div id="rSub" style="font-size:14px;color:var(--muted);font-weight:800"></div>
+      <div class="stats">
+        <div class="stat"><small>存活</small><b id="rTime"></b></div>
+        <div class="stat"><small>成功</small><b id="rGood"></b></div>
+        <div class="stat"><small>做錯</small><b id="rBad"></b></div>
+      </div>
+      <div id="rQuote" class="quote"></div>
+      <div id="rChallenge" class="challenge"></div>
+    </div>
+  </section>
+
+  <button id="start" class="start" type="button">開始上班 🔥</button>
+  <div id="status" class="status">看看你能撐多久。</div>
+</div>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const cover=$('#cover'),hud=$('#hud'),intro=$('#intro'),game=$('#game'),result=$('#result'),
+start=$('#start'),queue=$('#queue'),alertBox=$('#alert'),current=$('#current'),
+serve=$('#serve'),status=$('#status'),time=$('#time'),goodEl=$('#good'),lifeEl=$('#life'),
+queueCount=$('#queueCount');
+
+const data={
+ tea:['茉香綠','桂花青','古早紅','奶茶'],
+ sugar:['無糖','微糖','半糖','正常糖'],
+ ice:['去冰','微冰','少冰','正常冰'],
+ top:['不加料','珍珠','寒天','仙草凍']
+};
+const LIMIT=60,PATIENCE=16;
+let orders=[],selected=null,pick={},life=3,good=0,bad=0,running=false,t0=0,lastSpawn=0,lastChaos=0,raf=0,id=0;
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+
+function order(now){return {id:++id,tea:rnd(data.tea),sugar:rnd(data.sugar),ice:rnd(data.ice),top:rnd(data.top),born:now};}
+function msg(t,danger=false){alertBox.textContent=t;alertBox.classList.toggle('danger',danger);}
+function updateServe(){
+  const ready=selected && ['tea','sugar','ice','top'].every(k=>pick[k]);
+  serve.classList.toggle('ready',!!ready);
+  serve.textContent=ready?'🧋 READY・封膜出杯！':'請完成四區設定';
+}
+function build(key,sel){
+  const box=$(sel); box.innerHTML='';
+  data[key].forEach(v=>{
+    const b=document.createElement('button');b.type='button';b.className='choice';b.textContent=v;
+    b.onclick=()=>{
+      [...box.children].forEach(x=>x.classList.remove('sel'));
+      b.classList.add('sel');pick[key]=v;updateServe();
+    };
+    box.appendChild(b);
+  });
+}
+function clearPick(){
+  document.querySelectorAll('.choice.sel').forEach(x=>x.classList.remove('sel'));
+  pick={};updateServe();
+}
+function drawQueue(now){
+  queue.innerHTML='';queueCount.textContent=orders.length+' 張訂單';
+  orders.forEach(o=>{
+    const age=(now-o.born)/1000,remain=Math.max(0,PATIENCE-age);
+    const b=document.createElement('button');b.type='button';
+    b.className='ticket'+(age>11?' urgent':'')+(selected&&selected.id===o.id?' active':'');
+    b.innerHTML=`<div class="ticket-top"><b>ORDER #${o.id}</b><span>${age>11?'😡':'🙂'}</span></div>
+    <div class="ticket-drink">${o.tea}</div>
+    <div class="ticket-meta">${o.sugar}・${o.ice}<br>${o.top}</div>
+    <div class="bar"><span style="width:${(remain/PATIENCE)*100}%"></span></div>`;
+    b.onclick=()=>{
+      selected=o;current.textContent=`ORDER #${o.id}｜${o.tea}`;clearPick();drawQueue(performance.now());
+    };
+    queue.appendChild(b);
+  });
+}
+function lose(t){
+  life--;lifeEl.textContent='❤️'.repeat(Math.max(0,life))+'🖤'.repeat(Math.max(0,3-life));msg(t,true);
+  if(life<=0)end(false);
+}
+function chaos(now){
+  if(!orders.length)return;
+  const o=rnd(orders),type=rnd(['change','delivery','rush']);
+  if(type==='change'){
+    const k=rnd(['sugar','ice','top']),nv=rnd(data[k].filter(x=>x!==o[k]));
+    o[k]=nv;msg(`🚨 ORDER #${o.id} 改單：${k==='sugar'?'甜度':k==='ice'?'冰塊':'加料'} → ${nv}`,true);
+  }else if(type==='delivery'){
+    orders.push(order(now),order(now));msg('🔔 外送平台突然 +2 杯！',true);
+  }else msg('😡 客人：不好意思，我真的趕時間！',true);
+}
+serve.onclick=()=>{
+  if(!running||!selected){msg('⚠️ 先點一張訂單！',true);return;}
+  if(!['tea','sugar','ice','top'].every(k=>pick[k])){msg('⚠️ 四區都要選完！',true);return;}
+  const ok=['tea','sugar','ice','top'].every(k=>pick[k]===selected[k]);
+  const oid=selected.id,idx=orders.findIndex(o=>o.id===oid);
+  if(ok){good++;goodEl.textContent=good;msg(`✅ ORDER #${oid} 完美出杯！`);}
+  else{bad++;lose(`❌ ORDER #${oid} 做錯了！`);}
+  if(idx>=0)orders.splice(idx,1);
+  selected=null;current.textContent='選下一張訂單';clearPick();drawQueue(performance.now());
+};
+function end(win){
+  if(!running)return;
+  running=false;cancelAnimationFrame(raf);
+  const sec=Math.min(LIMIT,(performance.now()-t0)/1000);
+  game.classList.add('hidden');hud.style.display='none';result.classList.remove('hidden');cover.style.display='block';
+  $('#rEmoji').textContent=win?'🏆🧋':'💥😵';
+  $('#rHead').textContent=win?'你真的下班了！':'全店爆炸。';
+  $('#rSub').textContent=win?'成功撐過 60 秒尖峰':'你存活了 '+sec.toFixed(1)+' 秒';
+  $('#rTime').textContent=sec.toFixed(1)+'秒';$('#rGood').textContent=good+'杯';$('#rBad').textContent=bad+'杯';
+  $('#rQuote').textContent=win?'老闆：明天尖峰還是你站吧台。':'老闆：你先出去，我來。';
+  $('#rChallenge').textContent=win?`你成功做了 ${good} 杯。朋友能超過嗎？`:`再撐 ${(LIMIT-sec).toFixed(1)} 秒，你就能下班。`;
+  start.textContent='再撐一次 🔥';start.style.display='block';
+}
+function loop(now){
+  if(!running)return;
+  const sec=(now-t0)/1000;time.textContent=Math.min(LIMIT,sec).toFixed(1);
+  if(sec>=LIMIT){end(true);return;}
+  const interval=sec<15?5000:sec<30?4200:sec<45?3400:2700;
+  if(now-lastSpawn>interval){orders.push(order(now));lastSpawn=now;msg(sec>30?'🔔 新訂單！快快快！':'🔔 新客人進店');}
+  const cgap=sec<15?10000:sec<30?7600:sec<45?5700:4300;
+  if(now-lastChaos>cgap&&sec>8){chaos(now);lastChaos=now;}
+  for(let i=orders.length-1;i>=0;i--){
+    if((now-orders[i].born)/1000>PATIENCE){
+      const oid=orders[i].id;orders.splice(i,1);
+      if(selected&&selected.id===oid){selected=null;current.textContent='客人氣跑了…';clearPick();}
+      lose(`💢 ORDER #${oid} 等超過 ${PATIENCE} 秒走掉了！`);
+      if(!running)return;
+    }
+  }
+  drawQueue(now);
+  status.textContent=sec>45?'🔥🔥🔥 地獄尖峰！':sec>30?'🔥 訂單開始爆量！':sec>15?'😰 開始忙起來了…':'😌 還算和平';
+  raf=requestAnimationFrame(loop);
+}
+function begin(){
+  cancelAnimationFrame(raf);
+  orders=[];selected=null;pick={};life=3;good=0;bad=0;id=0;
+  goodEl.textContent='0';lifeEl.textContent='❤️❤️❤️';time.textContent='0.0';
+  cover.style.display='none';intro.classList.add('hidden');result.classList.add('hidden');hud.style.display='block';game.classList.remove('hidden');
+  ['tea','sugar','ice','top'].forEach((k,i)=>build(k,['#tea','#sugar','#ice','#top'][i]));
+  running=true;t0=performance.now();lastSpawn=t0-5000;lastChaos=t0;start.style.display='none';
+  msg('🧋 開店！第一位客人來了');updateServe();raf=requestAnimationFrame(loop);
+}
+start.onclick=begin;
+})();
+</script>
+</body>
+</html>
