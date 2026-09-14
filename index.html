@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>飲料店地獄模式｜試玩版</title>
+<title>飲料店地獄模式</title>
 <style>
 :root{
   --bg1:#fffaf4; --bg2:#ecd8c0; --paper:#fffdf9; --ink:#5d4134;
   --muted:#96715b; --line:#e6d0b9; --dark:#2a2725; --accent:#5d4134;
-  --danger:#c65748; --ok:#315f48;
+  --danger:#c65748; --ok:#315f48; --disabled:#eadfd5;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Noto Sans TC",sans-serif}
@@ -26,8 +26,8 @@ button{font:inherit}
 .hudcell+.hudcell{border-left:1px solid rgba(255,255,255,.12)}
 .hudlabel{font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,.55)}
 .hudbig{font-size:21px;font-weight:900}
-.stage{margin-top:9px;padding:11px;min-height:660px}
-.intro,.result{min-height:620px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.stage{margin-top:9px;padding:11px;min-height:670px}
+.intro,.result{min-height:630px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .intro .emoji,.result .emoji{font-size:66px}
 .intro h2,.result h2{margin:14px 0 4px}
 .intro h2{font-size:24px}.result h2{font-size:29px}
@@ -41,9 +41,13 @@ button{font:inherit}
 .queue{display:flex;gap:8px;overflow-x:auto;min-height:111px;padding:6px 1px}
 .ticket{
   min-width:148px;border:1px solid var(--line);border-radius:16px;background:#fffdf9;
-  padding:9px;text-align:left;box-shadow:0 4px 0 rgba(93,65,52,.06)
+  padding:9px;text-align:left;box-shadow:0 4px 0 rgba(93,65,52,.06);position:relative
 }
-.ticket.active{outline:3px solid var(--accent);transform:translateY(-1px)}
+.ticket.active{outline:4px solid var(--accent);transform:translateY(-1px);background:#fff8ef}
+.ticket.active::after{
+  content:"製作中";position:absolute;right:8px;top:28px;background:var(--accent);color:#fff;
+  font-size:9px;font-weight:900;padding:3px 6px;border-radius:999px
+}
 .ticket.urgent{background:#fff4f1;border-color:#d68777}
 .ticket-top{display:flex;justify-content:space-between;font-size:10px}
 .ticket-drink{font-size:12px;font-weight:900;margin-top:4px}
@@ -55,6 +59,10 @@ button{font:inherit}
 .now small{display:block;font-size:10px;font-weight:900;letter-spacing:.08em;color:var(--muted)}
 #current{font-size:14px;font-weight:900;margin-top:2px}
 .station{font-size:10px;font-weight:900;background:#f1e3d5;border-radius:10px;padding:5px 8px}
+.progress-wrap{margin-top:8px;display:flex;align-items:center;gap:8px}
+.progress-text{font-size:11px;font-weight:900;color:var(--muted);min-width:76px}
+.progress-track{height:8px;flex:1;background:#ead9c8;border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:var(--accent);transition:.15s}
 .group{margin-top:8px;background:#fffaf6;border:1px solid #ead8c5;border-radius:16px;padding:8px}
 .group-title{font-size:11px;font-weight:900;color:#80604c;margin-bottom:6px}
 .choices{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
@@ -65,11 +73,13 @@ button{font:inherit}
 .choice:active{transform:scale(.96)}
 .choice.sel{background:var(--accent);color:#fff;border-color:var(--accent);outline:3px solid rgba(93,65,52,.15)}
 .choice.sel::before{content:"✓ ";font-weight:900}
+.choice:disabled{background:var(--disabled);color:#aa9585;border-color:#e1d4c8;opacity:.72}
 .serve{
-  width:100%;min-height:50px;border:0;border-radius:16px;margin-top:10px;
-  background:#d8c6b7;color:#7d6658;font-weight:900;font-size:15px;transition:.1s
+  width:100%;min-height:54px;border:0;border-radius:16px;margin-top:10px;
+  background:#d8c6b7;color:#7d6658;font-weight:900;font-size:16px;transition:.1s
 }
-.serve.ready{background:var(--accent);color:#fff;box-shadow:0 6px 0 #412d25}
+.serve.ready{background:var(--accent);color:#fff;box-shadow:0 6px 0 #412d25;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.015)}}
 .start{
   width:100%;min-height:52px;margin-top:9px;border:0;border-radius:16px;
   background:var(--accent);color:#fff;font-weight:900;font-size:16px
@@ -82,7 +92,7 @@ button{font:inherit}
 .hidden{display:none!important}
 @media(max-width:390px){
   .choice{font-size:9.5px;min-height:40px}
-  .stage{min-height:640px}
+  .stage{min-height:650px}
 }
 </style>
 </head>
@@ -106,7 +116,7 @@ button{font:inherit}
     <div id="intro" class="intro">
       <div class="emoji">😌🧋</div>
       <h2>現在看起來很和平。</h2>
-      <p>但尖峰快到了。<br>每張訂單只有 <b>16 秒</b>，做錯或拖太久都會扣耐心。</p>
+      <p>先點上方訂單，再依序設定四區。<br>每張訂單只有 <b>16 秒</b>。</p>
       <div class="note">❤️ 歸零＝全店爆炸 💥</div>
     </div>
 
@@ -118,8 +128,13 @@ button{font:inherit}
 
       <div class="work">
         <div class="now">
-          <div><small>NOW MAKING</small><div id="current">先點一張訂單</div></div>
+          <div><small>NOW MAKING</small><div id="current">👆 先點上方一張訂單</div></div>
           <div class="station">吧台 A</div>
+        </div>
+
+        <div class="progress-wrap">
+          <div id="progressText" class="progress-text">已完成 0/4</div>
+          <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
         </div>
 
         <div class="group"><div class="group-title">① 品項</div><div id="tea" class="choices"></div></div>
@@ -127,7 +142,7 @@ button{font:inherit}
         <div class="group"><div class="group-title">③ 冰塊</div><div id="ice" class="choices"></div></div>
         <div class="group"><div class="group-title">④ 加料</div><div id="top" class="choices"></div></div>
 
-        <button id="serve" class="serve" type="button">請完成四區設定</button>
+        <button id="serve" class="serve" type="button" disabled>先選一張訂單</button>
       </div>
     </div>
 
@@ -155,7 +170,7 @@ const $=s=>document.querySelector(s);
 const cover=$('#cover'),hud=$('#hud'),intro=$('#intro'),game=$('#game'),result=$('#result'),
 start=$('#start'),queue=$('#queue'),alertBox=$('#alert'),current=$('#current'),
 serve=$('#serve'),status=$('#status'),time=$('#time'),goodEl=$('#good'),lifeEl=$('#life'),
-queueCount=$('#queueCount');
+queueCount=$('#queueCount'),progressText=$('#progressText'),progressFill=$('#progressFill');
 
 const data={
  tea:['茉香綠','桂花青','古早紅','奶茶'],
@@ -169,15 +184,26 @@ const rnd=a=>a[Math.floor(Math.random()*a.length)];
 
 function order(now){return {id:++id,tea:rnd(data.tea),sugar:rnd(data.sugar),ice:rnd(data.ice),top:rnd(data.top),born:now};}
 function msg(t,danger=false){alertBox.textContent=t;alertBox.classList.toggle('danger',danger);}
+function setChoicesEnabled(on){document.querySelectorAll('.choice').forEach(b=>b.disabled=!on);}
+function updateProgress(){
+  const done=['tea','sugar','ice','top'].filter(k=>pick[k]).length;
+  progressText.textContent=`已完成 ${done}/4`;
+  progressFill.style.width=(done*25)+'%';
+}
 function updateServe(){
-  const ready=selected && ['tea','sugar','ice','top'].every(k=>pick[k]);
-  serve.classList.toggle('ready',!!ready);
-  serve.textContent=ready?'🧋 READY・封膜出杯！':'請完成四區設定';
+  updateProgress();
+  if(!selected){
+    serve.disabled=true;serve.classList.remove('ready');serve.textContent='先選一張訂單';return;
+  }
+  const ready=['tea','sugar','ice','top'].every(k=>pick[k]);
+  serve.disabled=!ready;
+  serve.classList.toggle('ready',ready);
+  serve.textContent=ready?'🧋 出杯！':'請完成四區設定';
 }
 function build(key,sel){
   const box=$(sel); box.innerHTML='';
   data[key].forEach(v=>{
-    const b=document.createElement('button');b.type='button';b.className='choice';b.textContent=v;
+    const b=document.createElement('button');b.type='button';b.className='choice';b.textContent=v;b.disabled=true;
     b.onclick=()=>{
       [...box.children].forEach(x=>x.classList.remove('sel'));
       b.classList.add('sel');pick[key]=v;updateServe();
@@ -189,6 +215,12 @@ function clearPick(){
   document.querySelectorAll('.choice.sel').forEach(x=>x.classList.remove('sel'));
   pick={};updateServe();
 }
+function selectOrder(o,now){
+  selected=o;
+  current.textContent=`ORDER #${o.id}｜${o.tea}｜${o.sugar}｜${o.ice}｜${o.top}`;
+  clearPick();setChoicesEnabled(true);updateServe();drawQueue(now);
+  msg(`✅ 已鎖定 ORDER #${o.id}，開始製作`);
+}
 function drawQueue(now){
   queue.innerHTML='';queueCount.textContent=orders.length+' 張訂單';
   orders.forEach(o=>{
@@ -199,9 +231,7 @@ function drawQueue(now){
     <div class="ticket-drink">${o.tea}</div>
     <div class="ticket-meta">${o.sugar}・${o.ice}<br>${o.top}</div>
     <div class="bar"><span style="width:${(remain/PATIENCE)*100}%"></span></div>`;
-    b.onclick=()=>{
-      selected=o;current.textContent=`ORDER #${o.id}｜${o.tea}`;clearPick();drawQueue(performance.now());
-    };
+    b.onclick=()=>selectOrder(o,performance.now());
     queue.appendChild(b);
   });
 }
@@ -215,19 +245,23 @@ function chaos(now){
   if(type==='change'){
     const k=rnd(['sugar','ice','top']),nv=rnd(data[k].filter(x=>x!==o[k]));
     o[k]=nv;msg(`🚨 ORDER #${o.id} 改單：${k==='sugar'?'甜度':k==='ice'?'冰塊':'加料'} → ${nv}`,true);
+    if(selected&&selected.id===o.id){
+      current.textContent=`ORDER #${o.id}｜${o.tea}｜${o.sugar}｜${o.ice}｜${o.top}`;
+    }
   }else if(type==='delivery'){
     orders.push(order(now),order(now));msg('🔔 外送平台突然 +2 杯！',true);
   }else msg('😡 客人：不好意思，我真的趕時間！',true);
 }
 serve.onclick=()=>{
-  if(!running||!selected){msg('⚠️ 先點一張訂單！',true);return;}
-  if(!['tea','sugar','ice','top'].every(k=>pick[k])){msg('⚠️ 四區都要選完！',true);return;}
+  if(!running||!selected)return;
+  const ready=['tea','sugar','ice','top'].every(k=>pick[k]);
+  if(!ready)return;
   const ok=['tea','sugar','ice','top'].every(k=>pick[k]===selected[k]);
   const oid=selected.id,idx=orders.findIndex(o=>o.id===oid);
   if(ok){good++;goodEl.textContent=good;msg(`✅ ORDER #${oid} 完美出杯！`);}
-  else{bad++;lose(`❌ ORDER #${oid} 做錯了！`);}
+  else{bad++;lose(`❌ ORDER #${oid} 做錯了！`,true);}
   if(idx>=0)orders.splice(idx,1);
-  selected=null;current.textContent='選下一張訂單';clearPick();drawQueue(performance.now());
+  selected=null;current.textContent='👆 選下一張訂單';clearPick();setChoicesEnabled(false);updateServe();drawQueue(performance.now());
 };
 function end(win){
   if(!running)return;
@@ -253,7 +287,9 @@ function loop(now){
   for(let i=orders.length-1;i>=0;i--){
     if((now-orders[i].born)/1000>PATIENCE){
       const oid=orders[i].id;orders.splice(i,1);
-      if(selected&&selected.id===oid){selected=null;current.textContent='客人氣跑了…';clearPick();}
+      if(selected&&selected.id===oid){
+        selected=null;current.textContent='客人氣跑了…';clearPick();setChoicesEnabled(false);updateServe();
+      }
       lose(`💢 ORDER #${oid} 等超過 ${PATIENCE} 秒走掉了！`);
       if(!running)return;
     }
@@ -268,8 +304,9 @@ function begin(){
   goodEl.textContent='0';lifeEl.textContent='❤️❤️❤️';time.textContent='0.0';
   cover.style.display='none';intro.classList.add('hidden');result.classList.add('hidden');hud.style.display='block';game.classList.remove('hidden');
   ['tea','sugar','ice','top'].forEach((k,i)=>build(k,['#tea','#sugar','#ice','#top'][i]));
+  setChoicesEnabled(false);updateServe();
   running=true;t0=performance.now();lastSpawn=t0-5000;lastChaos=t0;start.style.display='none';
-  msg('🧋 開店！第一位客人來了');updateServe();raf=requestAnimationFrame(loop);
+  msg('🧋 開店！先點上方一張訂單');raf=requestAnimationFrame(loop);
 }
 start.onclick=begin;
 })();
