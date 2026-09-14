@@ -176,9 +176,9 @@ queueCount=$('#queueCount'),progressText=$('#progressText'),progressFill=$('#pro
 
 const data={
  tea:['茉香綠','桂花青','古早紅','奶茶'],
- sugar:['無糖','微糖','半糖','正常糖'],
- ice:['去冰','微冰','少冰','正常冰'],
- top:['不加料','珍珠','寒天','仙草凍']
+ sugar:['正常糖','半糖','微糖','無糖'],
+ ice:['正常冰','少冰','微冰','去冰'],
+ top:['珍珠','寒天','仙草凍','不加料']
 };
 const LIMIT=60,PATIENCE=16;
 let orders=[],selected=null,pick={},life=3,good=0,bad=0,running=false,t0=0,lastSpawn=0,lastChaos=0,raf=0,id=0;
