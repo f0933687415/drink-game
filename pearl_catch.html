@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>七里香大同店｜珍珠爆爆接</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"PingFang TC",sans-serif;background:#f7ead6;color:#3d291e;touch-action:none}
+#game{position:relative;width:100%;max-width:520px;height:100%;margin:auto;overflow:hidden;background:linear-gradient(#fff7e9 0 16%,#f4d8ae 16% 72%,#c99a68 72%);user-select:none}
+.shop{position:absolute;top:0;left:0;right:0;height:16%;display:flex;align-items:center;justify-content:center;background:#fff7e9;border-bottom:3px solid #8b5d3b}
+.brand{text-align:center;font-weight:1000;font-size:22px}.brand small{display:block;font-size:11px;letter-spacing:.12em;margin-top:2px}
+.hud{position:absolute;z-index:10;top:17%;left:8px;right:8px;display:flex;gap:6px}
+.hud div{flex:1;background:rgba(255,250,241,.92);border:2px solid #8b5d3b;border-radius:13px;text-align:center;padding:6px 2px;font-size:12px;font-weight:800}
+.hud b{display:block;font-size:20px}
+#field{position:absolute;left:0;right:0;top:25%;bottom:0;overflow:hidden}
+.item{position:absolute;z-index:4;width:38px;height:38px;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%);filter:drop-shadow(0 3px 2px rgba(0,0,0,.14))}
+.pearl{width:26px;height:26px;border-radius:50%;background:#352018;border:3px solid #6d4331;box-shadow:inset 5px 5px rgba(255,255,255,.12)}
+.gold{width:28px;height:28px;border-radius:50%;background:#f1b92b;border:3px solid #9c6716;box-shadow:0 0 13px #ffd75b}
+.emoji{font-size:28px}
+#cup{position:absolute;z-index:8;width:98px;height:116px;left:50%;bottom:24px;transform:translateX(-50%);touch-action:none}
+.cupbody{position:absolute;left:9px;right:9px;top:8px;bottom:0;border:4px solid #5b4031;border-radius:7px 7px 24px 24px;background:rgba(235,185,124,.75);overflow:hidden;box-shadow:inset 0 12px rgba(255,255,255,.28),0 8px 14px rgba(0,0,0,.16)}
+.cupbody:after{content:"七里香";position:absolute;z-index:3;top:40px;left:4px;right:4px;text-align:center;background:rgba(255,255,255,.8);padding:5px 0;font-weight:1000;font-size:13px}
+#pile{position:absolute;left:3px;right:3px;bottom:3px;height:8px;background:repeating-radial-gradient(circle at 7px 6px,#352018 0 5px,transparent 6px 12px);transition:height .12s}
+.rim{position:absolute;z-index:3;left:3px;right:3px;top:0;height:17px;border:4px solid #5b4031;border-radius:50%;background:#f5d19d}
+#cup.grab{filter:drop-shadow(0 0 8px #ffd75b)}
+#tip{position:absolute;z-index:12;left:50%;bottom:153px;transform:translateX(-50%);white-space:nowrap;background:#3d291e;color:white;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:900;pointer-events:none}
+#banner{position:absolute;z-index:20;left:50%;top:40%;transform:translate(-50%,-50%);font-size:34px;font-weight:1000;text-align:center;white-space:nowrap;opacity:0;pointer-events:none;text-shadow:0 3px white}
+#banner.show{animation:pop .58s ease}
+#burst{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;background:radial-gradient(circle,#fff1a5 0,rgba(255,202,67,.28) 38%,transparent 72%)}
+#burst.on{opacity:1;animation:pulse .4s ease-in-out infinite alternate}
+#start,#again{border:0;border-radius:999px;background:#6f452f;color:white;font-weight:1000;font-size:18px;padding:14px 30px}
+#start{position:absolute;z-index:30;left:50%;top:49%;transform:translateX(-50%);box-shadow:0 5px 0 #43291d}
+#end{display:none;position:absolute;z-index:40;inset:0;background:rgba(62,39,27,.78);align-items:center;justify-content:center;padding:24px}
+.card{width:100%;background:#fff8ee;border-radius:24px;padding:25px;text-align:center;border:4px solid #d7aa6d}.card h2{margin:0 0 8px;font-size:28px}.card .big{font-size:42px;font-weight:1000}.card p{margin:7px 0 18px}
+.float{position:absolute;z-index:15;font-weight:1000;font-size:21px;pointer-events:none;animation:float .65s ease forwards}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}35%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}100%{opacity:0;transform:translate(-50%,-80%) scale(.9)}}
+@keyframes pulse{from{transform:scale(.96)}to{transform:scale(1.08)}}
+@keyframes float{0%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-55px) scale(1.2)}}
+</style>
+</head>
+<body>
+<div id="game">
+ <div class="shop"><div class="brand">七里香大同店<small>珍珠爆爆接</small></div></div>
+ <div class="hud"><div>⏱ 時間<b id="time">35</b></div><div>🧋 分數<b id="score">0</b></div><div>🔥 Combo<b id="combo">0</b></div><div>🏆 最高<b id="best">0</b></div></div>
+ <div id="field">
+   <div id="burst"></div><div id="banner"></div>
+   <div id="cup"><div class="rim"></div><div class="cupbody"><div id="pile"></div></div></div>
+   <div id="tip">👆 按住杯子，直接左右拖</div>
+ </div>
+ <button id="start">開始接珍珠</button>
+ <div id="end"><div class="card"><h2 id="rank">珍珠新手</h2><div class="big" id="final">0</div><p id="detail"></p><button id="again">再接一杯</button></div></div>
+</div>
+<script>
+(()=>{
+const $=s=>document.querySelector(s),field=$('#field'),cup=$('#cup'),timeEl=$('#time'),scoreEl=$('#score'),comboEl=$('#combo'),bestEl=$('#best'),start=$('#start'),end=$('#end'),again=$('#again'),banner=$('#banner'),burst=$('#burst'),tip=$('#tip'),pile=$('#pile');
+let running=false,t=35,score=0,combo=0,best=0,items=[],timer=null,raf=null,lastTs=0,spawnAcc=0,grab=false,burstUntil=0;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function moveCup(clientX){const r=field.getBoundingClientRect();cup.style.left=clamp(clientX-r.left,53,r.width-53)+'px'}
+function point(e){return e.touches?e.touches[0]:e}
+function down(e){if(!running)return;if(e.cancelable)e.preventDefault();grab=true;cup.classList.add('grab');tip.style.display='none';moveCup(point(e).clientX)}
+function move(e){if(!running||!grab)return;if(e.cancelable)e.preventDefault();moveCup(point(e).clientX)}
+function up(){grab=false;cup.classList.remove('grab')}
+cup.addEventListener('pointerdown',down);window.addEventListener('pointermove',move,{passive:false});window.addEventListener('pointerup',up);
+cup.addEventListener('touchstart',down,{passive:false});window.addEventListener('touchmove',move,{passive:false});window.addEventListener('touchend',up);
+function show(s){banner.classList.remove('show');banner.innerHTML=s;void banner.offsetWidth;banner.classList.add('show')}
+function floatTxt(s,x,y){const d=document.createElement('div');d.className='float';d.textContent=s;d.style.left=x+'px';d.style.top=y+'px';field.appendChild(d);setTimeout(()=>d.remove(),700)}
+function spawn(){
+ const elapsed=35-t,r=Math.random();let type='pearl';
+ if(elapsed>9&&r<.10)type='jelly';
+ if(elapsed>14&&r<.17)type='gold';
+ if(elapsed>18&&r>.93)type='bad';
+ const d=document.createElement('div');d.className='item';
+ d.innerHTML=type==='pearl'?'<i class="pearl"></i>':type==='gold'?'<i class="gold"></i>':type==='jelly'?'<span class="emoji">💎</span>':'<span class="emoji">🍋</span>';
+ const w=field.clientWidth,x=24+Math.random()*(w-48);d.style.left=x+'px';d.style.top='-30px';field.appendChild(d);
+ items.push({d,x,y:-30,speed:155+elapsed*4+Math.random()*55,type});
+}
+function hit(it){const a=it.d.getBoundingClientRect(),c=cup.getBoundingClientRect();return a.right>c.left+5&&a.left<c.right-5&&a.bottom>c.top-5&&a.top<c.top+28}
+function catchIt(it){
+ if(it.type==='bad'){combo=0;score=Math.max(0,score-3);scoreEl.textContent=score;comboEl.textContent=0;show('🍋 酸到！ -3');if(navigator.vibrate)navigator.vibrate([40,25,40]);return}
+ let pts=it.type==='gold'?5:it.type==='jelly'?2:1,label=it.type==='gold'?'✨ +5':it.type==='jelly'?'寒天 +2':'+1';
+ const mult=performance.now()<burstUntil?2:1;combo++;score+=pts*mult;best=Math.max(best,combo);scoreEl.textContent=score;comboEl.textContent=combo;bestEl.textContent=best;pile.style.height=Math.min(61,8+score*.72)+'px';
+ const c=cup.getBoundingClientRect(),f=field.getBoundingClientRect();floatTxt(label+(mult===2?' ×2':''),c.left-f.left+c.width/2,c.top-f.top);
+ if(combo===5)show('NICE! 🔥 ×5');if(combo===10)show('神手！🔥 ×10');
+ if(combo>0&&combo%15===0){burstUntil=performance.now()+5000;burst.classList.add('on');show('🔥 爆杯模式！<div style="font-size:16px">5秒分數 ×2</div>');if(navigator.vibrate)navigator.vibrate([30,30,70])}
+}
+function loop(ts){
+ if(!running)return;const dt=Math.min(.035,(ts-lastTs)/1000||0);lastTs=ts;const elapsed=35-t,inBurst=ts<burstUntil;if(!inBurst)burst.classList.remove('on');
+ const interval=Math.max(205,650-elapsed*12)*(inBurst?.38:1);spawnAcc+=dt*1000;
+ while(spawnAcc>=interval){spawnAcc-=interval;spawn();if(elapsed>12&&Math.random()<.16)spawn()}
+ for(let i=items.length-1;i>=0;i--){const it=items[i];it.y+=it.speed*dt;it.d.style.top=it.y+'px';if(hit(it)){catchIt(it);it.d.remove();items.splice(i,1)}else if(it.y>field.clientHeight+40){if(it.type!=='bad'){combo=0;comboEl.textContent=0}it.d.remove();items.splice(i,1)}}
+ raf=requestAnimationFrame(loop)
+}
+function reset(){
+ clearInterval(timer);cancelAnimationFrame(raf);items.forEach(x=>x.d.remove());items=[];running=true;t=35;score=combo=best=0;spawnAcc=0;burstUntil=0;
+ timeEl.textContent=t;scoreEl.textContent=comboEl.textContent=bestEl.textContent=0;pile.style.height='8px';start.style.display='none';end.style.display='none';tip.style.display='block';burst.classList.remove('on');cup.style.left='50%';lastTs=performance.now();
+ timer=setInterval(()=>{if(--t<=0){t=0;timeEl.textContent=0;finish()}else timeEl.textContent=t},1000);raf=requestAnimationFrame(loop)
+}
+function finish(){if(!running)return;running=false;grab=false;clearInterval(timer);cancelAnimationFrame(raf);items.forEach(x=>x.d.remove());items=[];const rank=score>=80?'🏆 珍珠戰神':score>=55?'🔥 爆杯高手':score>=35?'😎 接料達人':score>=18?'👏 吧台新星':'🧋 珍珠新手';$('#rank').textContent=rank;$('#final').textContent=score+' 分';$('#detail').textContent='最高 Combo ×'+best+'｜再來一次破紀錄？';end.style.display='flex'}
+start.onclick=reset;again.onclick=reset;
+})();
+</script>
+</body></html>
