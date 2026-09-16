@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<!-- build: v2.4 Taiwan daily leaderboard -->
+<title>七里香大同店｜1512 珍珠大暴走 V2.4 今日排行榜</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"PingFang TC",sans-serif;background:#f7ead6;color:#3d291e;touch-action:none}
+#game{position:relative;width:100%;max-width:520px;height:100%;margin:auto;overflow:hidden;background:linear-gradient(#fff7e9 0 16%,#f4d8ae 16% 72%,#c99a68 72%);user-select:none}
+.shop{position:absolute;top:0;left:0;right:0;height:16%;display:flex;align-items:center;justify-content:center;background:#fff7e9;border-bottom:3px solid #8b5d3b}
+.brand{text-align:center;font-weight:1000;font-size:22px}.brand small{display:block;font-size:11px;letter-spacing:.12em;margin-top:2px}
+.hud{position:absolute;z-index:10;top:17%;left:8px;right:8px;display:flex;gap:6px}
+.hud div{flex:1;background:rgba(255,250,241,.92);border:2px solid #8b5d3b;border-radius:13px;text-align:center;padding:6px 2px;font-size:12px;font-weight:800}
+.hud b{display:block;font-size:20px}
+#field{position:absolute;left:0;right:0;top:25%;bottom:0;overflow:hidden}
+.item{position:absolute;z-index:4;width:38px;height:38px;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%);filter:drop-shadow(0 3px 2px rgba(0,0,0,.14))}
+.pearl{width:26px;height:26px;border-radius:50%;background:#352018;border:3px solid #6d4331;box-shadow:inset 5px 5px rgba(255,255,255,.12)}
+.white{width:26px;height:26px;border-radius:50%;background:#fffaf0;border:3px solid #b7a99a;box-shadow:inset 4px 4px rgba(255,255,255,.8),0 0 7px rgba(255,255,255,.9)}
+.gold{width:28px;height:28px;border-radius:50%;background:#f1b92b;border:3px solid #9c6716;box-shadow:0 0 13px #ffd75b}
+.emoji{font-size:28px}
+#cup{position:absolute;z-index:8;width:84px;height:116px;left:50%;bottom:24px;transform:translateX(-50%);touch-action:none}
+.cupbody{position:absolute;left:9px;right:9px;top:8px;bottom:0;border:4px solid #5b4031;border-radius:7px 7px 24px 24px;background:rgba(235,185,124,.75);overflow:hidden;box-shadow:inset 0 12px rgba(255,255,255,.28),0 8px 14px rgba(0,0,0,.16)}
+.cupbody:after{content:"七里香";position:absolute;z-index:3;top:40px;left:4px;right:4px;text-align:center;background:rgba(255,255,255,.8);padding:5px 0;font-weight:1000;font-size:13px}
+#pile{position:absolute;left:3px;right:3px;bottom:3px;height:8px;background:repeating-radial-gradient(circle at 7px 6px,#352018 0 5px,transparent 6px 12px);transition:height .12s}
+.rim{position:absolute;z-index:3;left:3px;right:3px;top:0;height:17px;border:4px solid #5b4031;border-radius:50%;background:#f5d19d}
+#cup.grab{filter:drop-shadow(0 0 8px #ffd75b)}
+#tip{position:absolute;z-index:12;left:50%;bottom:153px;transform:translateX(-50%);white-space:nowrap;background:#3d291e;color:white;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:900;pointer-events:none}
+#banner{position:absolute;z-index:20;left:50%;top:40%;transform:translate(-50%,-50%);font-size:34px;font-weight:1000;text-align:center;white-space:nowrap;opacity:0;pointer-events:none;text-shadow:0 3px white}
+#banner.show{animation:pop .58s ease}
+#burst{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;background:radial-gradient(circle,#fff1a5 0,rgba(255,202,67,.28) 38%,transparent 72%)}
+#burst.on{opacity:1;animation:pulse .4s ease-in-out infinite alternate}
+#start,#again{border:0;border-radius:999px;background:#6f452f;color:white;font-weight:1000;font-size:18px;padding:14px 30px}
+#start{position:absolute;z-index:30;left:50%;top:49%;transform:translateX(-50%);box-shadow:0 5px 0 #43291d}
+#end{display:none;position:absolute;z-index:40;inset:0;background:rgba(62,39,27,.78);align-items:center;justify-content:center;padding:24px}
+.card{width:100%;background:#fff8ee;border-radius:24px;padding:25px;text-align:center;border:4px solid #d7aa6d}.card h2{margin:0 0 8px;font-size:28px}.card .big{font-size:42px;font-weight:1000}.card p{margin:7px 0 18px}
+.float{position:absolute;z-index:15;font-weight:1000;font-size:21px;pointer-events:none;animation:float .65s ease forwards}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}35%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}100%{opacity:0;transform:translate(-50%,-80%) scale(.9)}}
+@keyframes pulse{from{transform:scale(.96)}to{transform:scale(1.08)}}
+@keyframes float{0%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-55px) scale(1.2)}}
+
+#countdown{position:absolute;z-index:18;left:50%;top:44%;transform:translate(-50%,-50%);font-size:120px;font-weight:1000;opacity:0;pointer-events:none;color:#9b2f28;text-shadow:0 5px 0 rgba(255,255,255,.75)}
+#countdown.hit{animation:countHit .78s ease}
+#game.last10{animation:lastPulse .72s ease-in-out infinite alternate}
+#game.last5{animation:lastShake .16s ease-in-out infinite alternate}
+#feverTag{position:absolute;z-index:17;top:4px;left:50%;transform:translateX(-50%);font-size:14px;font-weight:1000;padding:6px 13px;border-radius:999px;background:#3d291e;color:#ffd75b;display:none;white-space:nowrap}
+#feverTag.on{display:block;animation:tagPulse .35s ease-in-out infinite alternate}
+@keyframes countHit{0%{opacity:0;transform:translate(-50%,-50%) scale(1.8)}25%{opacity:.8;transform:translate(-50%,-50%) scale(.9)}70%{opacity:.28}100%{opacity:0;transform:translate(-50%,-50%) scale(1.15)}}
+@keyframes lastPulse{from{box-shadow:inset 0 0 0 rgba(190,55,45,0)}to{box-shadow:inset 0 0 80px rgba(190,55,45,.22)}}
+@keyframes lastShake{from{transform:translateX(-1.5px)}to{transform:translateX(1.5px)}}
+@keyframes tagPulse{from{transform:translateX(-50%) scale(1)}to{transform:translateX(-50%) scale(1.08)}}
+
+/* v2.2 performance: keep gameplay, reduce paint cost */
+.drop{will-change:transform;contain:layout paint;backface-visibility:hidden}
+.drop i{box-shadow:none!important}
+
+#leaderBtn{position:absolute;z-index:31;left:50%;top:58%;transform:translateX(-50%);border:2px solid #6f452f;border-radius:999px;background:#fff8ee;color:#5b3b2b;font-weight:1000;font-size:15px;padding:10px 18px}
+#todayTop{position:absolute;z-index:12;left:50%;top:22.2%;transform:translateX(-50%);white-space:nowrap;background:rgba(61,41,30,.88);color:#fff7e9;border-radius:999px;padding:5px 11px;font-size:11px;font-weight:900}
+#lb{display:none;position:absolute;z-index:60;inset:0;background:rgba(47,29,20,.86);align-items:center;justify-content:center;padding:18px}
+.lbcard{width:100%;max-height:88%;overflow:auto;background:#fff8ee;border:4px solid #d7aa6d;border-radius:24px;padding:18px}
+.lbhead{display:flex;align-items:center;justify-content:space-between;gap:10px}.lbhead h2{margin:0;font-size:24px}.lbclose{border:0;background:#ead2b3;border-radius:50%;width:36px;height:36px;font-size:20px;font-weight:1000}
+#lbStatus{font-size:12px;color:#80604b;margin:6px 0 10px}
+#lbRows{display:grid;gap:7px}.lbrow{display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:8px;background:#f3e3cd;border-radius:12px;padding:9px 10px;font-weight:900}.lbrow.me{outline:3px solid #e0aa3b}.lbscore{font-size:19px}.empty{text-align:center;padding:24px 8px;color:#8b6b57}
+#nameBox{display:none;position:absolute;z-index:70;inset:0;background:rgba(47,29,20,.86);align-items:center;justify-content:center;padding:24px}.namecard{width:100%;background:#fff8ee;border:4px solid #d7aa6d;border-radius:24px;padding:22px;text-align:center}.namecard h2{margin:0 0 7px}.namecard input{width:100%;font-size:18px;padding:13px;border:2px solid #9b765b;border-radius:13px;text-align:center;margin:12px 0}.namecard button{border:0;border-radius:999px;background:#6f452f;color:white;font-size:17px;font-weight:1000;padding:12px 24px}
+#submitMsg{font-weight:1000;min-height:22px;margin:7px 0 10px}.record{color:#b33a2e;font-size:20px}
+
+</style>
+</head>
+<body>
+<div id="game">
+ <div class="shop"><div class="brand">七里香大同店<small>1512 珍珠大暴走</small></div></div>
+ <div class="hud"><div>⏱ 時間<b id="time">35</b></div><div>🧋 分數<b id="score">0</b></div><div>🔥 Combo<b id="combo">0</b></div><div>🏆 最高<b id="best">0</b></div></div><div id="todayTop">🏆 今日最高：讀取中…</div>
+ <div id="field">
+   <div id="burst"></div><div id="banner"></div><div id="countdown"></div><div id="feverTag">🔥 1512 FEVER ×2</div>
+   <div id="cup"><div class="rim"></div><div class="cupbody"><div id="pile"></div></div></div>
+   <div id="tip">👆 按住杯子，直接左右拖</div>
+ </div>
+ <button id="start">開始接珍珠</button><button id="leaderBtn">🏆 今日 TOP 10</button>
+ <div id="end"><div class="card"><h2 id="rank">珍珠新手</h2><div class="big" id="final">0</div><div id="submitMsg"></div><p id="detail"></p><button id="again">再接一杯</button> <button id="endLeader" style="margin-top:10px;border:2px solid #6f452f;border-radius:999px;background:#fff8ee;color:#5b3b2b;font-weight:1000;font-size:16px;padding:11px 20px">🏆 看今日榜</button></div></div>
+<div id="lb"><div class="lbcard"><div class="lbhead"><h2>🏆 今日 TOP 10</h2><button class="lbclose" id="lbClose">×</button></div><div id="lbStatus">台灣時間・每日 00:00 換榜</div><div id="lbRows"></div></div></div>
+<div id="nameBox"><div class="namecard"><h2>留下挑戰暱稱</h2><div>第一次輸入後，這支手機會記住。</div><input id="nickname" maxlength="12" placeholder="例如：小宇"><button id="saveName">送出成績</button></div></div>
+</div>
+<script>
+(()=>{
+const $=s=>document.querySelector(s),field=$('#field'),cup=$('#cup'),timeEl=$('#time'),scoreEl=$('#score'),comboEl=$('#combo'),bestEl=$('#best'),start=$('#start'),end=$('#end'),again=$('#again'),banner=$('#banner'),burst=$('#burst'),tip=$('#tip'),pile=$('#pile'),leaderBtn=$('#leaderBtn'),todayTop=$('#todayTop'),lb=$('#lb'),lbRows=$('#lbRows'),lbClose=$('#lbClose'),endLeader=$('#endLeader'),nameBox=$('#nameBox'),nickname=$('#nickname'),saveName=$('#saveName'),submitMsg=$('#submitMsg');
+let running=false,t=35,score=0,combo=0,best=0,items=[],timer=null,raf=null,lastTs=0,spawnAcc=0,grab=false,burstUntil=0;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const SUPABASE_URL='https://ingivvanvjsphgnpwonv.supabase.co',SUPABASE_KEY='sb_publishable_Ok6MCEuu2SMJ9cxj4S7lOA_eilP4CQf';
+let pendingScore=null,preGameTop=0;
+function taiwanDayBounds(){
+ const now=new Date(),parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now);
+ const o=Object.fromEntries(parts.map(p=>[p.type,p.value])),y=+o.year,m=+o.month,d=+o.day;
+ const start=new Date(Date.UTC(y,m-1,d)-8*3600000),end=new Date(start.getTime()+86400000);
+ return [start.toISOString(),end.toISOString()];
+}
+async function sb(path,options={}){
+ const headers=Object.assign({'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},options.headers||{});
+ const r=await fetch(SUPABASE_URL+'/rest/v1/'+path,Object.assign({},options,{headers}));
+ if(!r.ok)throw new Error(await r.text());return r.status===204?null:r.json();
+}
+async function getToday(limit=10){
+ const [a,b]=taiwanDayBounds();
+ return sb('leaderboard?select=id,nickname,score,created_at&created_at=gte.'+encodeURIComponent(a)+'&created_at=lt.'+encodeURIComponent(b)+'&order=score.desc,created_at.asc&limit='+limit);
+}
+async function refreshTop(){
+ try{const rows=await getToday(10);preGameTop=rows[0]?.score||0;todayTop.textContent='🏆 今日最高：'+(preGameTop?preGameTop+' 分':'等你開榜！');return rows}
+ catch(e){todayTop.textContent='🏆 今日榜：連線中';return []}
+}
+async function openBoard(){
+ lb.style.display='flex';lbRows.innerHTML='<div class="empty">排行榜讀取中…</div>';
+ try{const rows=await getToday(10),me=localStorage.getItem('pearlNick')||'';preGameTop=rows[0]?.score||0;todayTop.textContent='🏆 今日最高：'+(preGameTop?preGameTop+' 分':'等你開榜！');
+  if(!rows.length)lbRows.innerHTML='<div class="empty">今天還沒有人上榜<br>第一名等你來！</div>';
+  else lbRows.innerHTML=rows.map((r,i)=>'<div class="lbrow '+(r.nickname===me?'me':'')+'"><div>'+(i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1))+'</div><div>'+esc(r.nickname)+'</div><div class="lbscore">'+r.score+'</div></div>').join('');
+ }catch(e){lbRows.innerHTML='<div class="empty">排行榜暫時讀不到<br>遊戲仍可正常玩</div>'}
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function submitScore(name,sc){
+ const oldTop=preGameTop;
+ await sb('leaderboard',{method:'POST',headers:{'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({nickname:name,score:sc})});
+ const rows=await refreshTop(),rank=rows.findIndex(r=>r.nickname===name&&r.score===sc)+1;
+ if(sc>oldTop)submitMsg.innerHTML='<span class="record">👑 NEW RECORD！今日新紀錄</span>';
+ else if(rank>0)submitMsg.textContent='🏆 今日第 '+rank+' 名';
+ else submitMsg.textContent='已送出今日挑戰成績';
+}
+async function handleFinishScore(){
+ pendingScore=score;submitMsg.textContent='準備送出今日排行榜…';
+ const saved=(localStorage.getItem('pearlNick')||'').trim();
+ if(saved){try{await submitScore(saved,pendingScore)}catch(e){submitMsg.textContent='排行榜送出失敗，可再玩不受影響'}}
+ else{submitMsg.textContent='輸入暱稱即可加入今日榜';nickname.value='';nameBox.style.display='flex';setTimeout(()=>nickname.focus(),150)}
+}
+leaderBtn.onclick=openBoard;endLeader.onclick=openBoard;lbClose.onclick=()=>lb.style.display='none';lb.onclick=e=>{if(e.target===lb)lb.style.display='none'};
+saveName.onclick=async()=>{const n=nickname.value.trim().slice(0,12);if(!n){nickname.focus();return};localStorage.setItem('pearlNick',n);nameBox.style.display='none';try{await submitScore(n,pendingScore)}catch(e){submitMsg.textContent='排行榜送出失敗，可再玩不受影響'}};
+refreshTop();
+
+function moveCup(clientX){const r=field.getBoundingClientRect();cup.style.left=clamp(clientX-r.left,53,r.width-53)+'px'}
+function point(e){return e.touches?e.touches[0]:e}
+function down(e){if(!running)return;if(e.cancelable)e.preventDefault();grab=true;cup.classList.add('grab');tip.style.display='none';moveCup(point(e).clientX)}
+function move(e){if(!running||!grab)return;if(e.cancelable)e.preventDefault();moveCup(point(e).clientX)}
+function up(){grab=false;cup.classList.remove('grab')}
+cup.addEventListener('pointerdown',down);window.addEventListener('pointermove',move,{passive:false});window.addEventListener('pointerup',up);
+cup.addEventListener('touchstart',down,{passive:false});window.addEventListener('touchmove',move,{passive:false});window.addEventListener('touchend',up);
+function show(s){banner.classList.remove('show');banner.innerHTML=s;void banner.offsetWidth;banner.classList.add('show')}
+function floatTxt(s,x,y){const d=document.createElement('div');d.className='float';d.textContent=s;d.style.left=x+'px';d.style.top=y+'px';field.appendChild(d);setTimeout(()=>d.remove(),700)}
+const MAX_DROPS=18;
+function spawn(){if(items.length>=MAX_DROPS)return;
+ const elapsed=35-t,r=Math.random();let type='pearl';
+ if(r<.24)type='white';
+ if(elapsed>10&&r>.88&&r<.94)type='gold';
+ if(elapsed>16&&r>.965)type='bad';
+ const d=document.createElement('div');d.className='item';
+ d.innerHTML=type==='pearl'?'<i class="pearl"></i>':type==='white'?'<i class="white"></i>':type==='gold'?'<i class="gold"></i>':'<span class="emoji">🍋</span>';
+ const w=field.clientWidth,x=24+Math.random()*(w-48);d.style.left=x+'px';d.style.top='-30px';field.appendChild(d);
+ items.push({d,x,y:-30,speed:225+elapsed*7.2+Math.random()*85+(t<=10?55:0)+(t<=5?65:0),type});
+}
+function hit(it){const a=it.d.getBoundingClientRect(),c=cup.getBoundingClientRect();return a.right>c.left+5&&a.left<c.right-5&&a.bottom>c.top-5&&a.top<c.top+28}
+function catchIt(it){
+ if(it.type==='bad'){combo=0;score=Math.max(0,score-3);scoreEl.textContent=score;comboEl.textContent=0;show('🍋 酸到！ -3');if(navigator.vibrate)navigator.vibrate([40,25,40]);return}
+ let pts=it.type==='gold'?4:1,label=it.type==='gold'?'🌟 巨大珍珠 +4':it.type==='white'?'⚪ +1':'⚫ +1';
+ const mult=(performance.now()<burstUntil||t<=5)?2:1;combo++;score+=Math.round(pts*mult);best=Math.max(best,combo);scoreEl.textContent=score;comboEl.textContent=combo;bestEl.textContent=best;pile.style.height=Math.min(61,8+score*.72)+'px';
+ const c=cup.getBoundingClientRect(),f=field.getBoundingClientRect();floatTxt(label+(mult>1?' ×'+mult:''),c.left-f.left+c.width/2,c.top-f.top);
+ if(combo===5)show('NICE! 🔥 ×5');if(combo===10)show('神手！🔥 ×10');
+ if(combo>0&&combo%15===0){burstUntil=performance.now()+5000;burst.classList.add('on');document.querySelector('#feverTag').classList.add('on');show('🔥 1512 FEVER！<div style="font-size:16px">5秒珍珠雨・分數 ×2</div>');if(navigator.vibrate)navigator.vibrate([30,30,70])}
+}
+function loop(ts){
+ if(!running)return;const dt=Math.min(.035,(ts-lastTs)/1000||0);lastTs=ts;const elapsed=35-t,inBurst=ts<burstUntil;if(!inBurst){burst.classList.remove('on');document.querySelector('#feverTag').classList.remove('on')}
+ let interval=Math.max(180,570-elapsed*12)*(inBurst?.50:1);if(t<=10)interval*=.82;if(t<=5)interval*=.80;spawnAcc+=dt*1000;
+ while(spawnAcc>=interval){spawnAcc-=interval;spawn();if(elapsed>7&&items.length<13&&Math.random()<.20)spawn();if(t<=5&&items.length<15&&Math.random()<.20)spawn()}
+ for(let i=items.length-1;i>=0;i--){const it=items[i];it.y+=it.speed*dt;it.d.style.top=it.y+'px';if(hit(it)){catchIt(it);it.d.remove();items.splice(i,1)}else if(it.y>field.clientHeight+40){if(it.type!=='bad'){combo=0;comboEl.textContent=0}it.d.remove();items.splice(i,1)}}
+ raf=requestAnimationFrame(loop)
+}
+function reset(){
+ clearInterval(timer);cancelAnimationFrame(raf);items.forEach(x=>x.d.remove());items=[];running=true;t=35;score=combo=best=0;spawnAcc=0;burstUntil=0;
+ timeEl.textContent=t;scoreEl.textContent=comboEl.textContent=bestEl.textContent=0;pile.style.height='8px';start.style.display='none';leaderBtn.style.display='none';end.style.display='none';tip.style.display='block';burst.classList.remove('on');document.querySelector('#feverTag').classList.remove('on');document.querySelector('#game').classList.remove('last10','last5');cup.style.left='50%';lastTs=performance.now();
+ timer=setInterval(()=>{
+  if(--t<=0){t=0;timeEl.textContent=0;document.querySelector('#game').classList.remove('last10','last5');finish();return}
+  timeEl.textContent=t;
+  const g=document.querySelector('#game'),cd=document.querySelector('#countdown');
+  if(t===10){g.classList.add('last10');show('⚠️ LAST 10！<div style="font-size:16px">最後十秒・撐住！</div>');if(navigator.vibrate)navigator.vibrate([50,35,50])}
+  if(t<=10){cd.textContent=t;cd.classList.remove('hit');void cd.offsetWidth;cd.classList.add('hit')}
+  if(t===5){g.classList.add('last5');show('🔥 最後暴走！<div style="font-size:16px">5秒分數 ×2</div>');if(navigator.vibrate)navigator.vibrate([70,30,70])}
+  if(t<=3&&navigator.vibrate)navigator.vibrate(30);
+},1000);raf=requestAnimationFrame(loop)
+}
+function finish(){if(!running)return;running=false;grab=false;clearInterval(timer);cancelAnimationFrame(raf);items.forEach(x=>x.d.remove());items=[];const rank=score>=200?'👑 珍珠之神':score>=150?'🔥 店長級':score>=100?'✨ 熟練手':score>=80?'🏆 珍珠戰神':'🧋 新手上路';$('#rank').textContent=rank;$('#final').textContent=score+' 分';$('#detail').textContent='最高 Combo ×'+best+'｜成績自動挑戰今日榜';end.style.display='flex';leaderBtn.style.display='block';handleFinishScore()}
+start.onclick=reset;again.onclick=reset;
+})();
+</script>
+</body></html>
