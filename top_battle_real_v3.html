@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>杯王陀螺 REAL BATTLE</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;background:#05070a;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif;overflow:hidden;touch-action:none}
+body{height:100svh}.app{height:100svh;display:flex;flex-direction:column;align-items:center;background:radial-gradient(circle at 50% 38%,#29323c 0,#0a0e13 58%,#030405 100%)}
+.topbar{width:min(96vw,560px);display:flex;justify-content:space-between;align-items:center;padding:10px 6px 4px}.brand{font-weight:1000;letter-spacing:1px}.brand em{font-style:normal;background:#d8ff2e;color:#111;padding:3px 6px;border-radius:5px;font-size:11px}.pts{font-weight:900}.pts b{color:#d8ff2e}
+.hud{width:min(96vw,560px);display:flex;gap:7px}.card{flex:1;background:#101720d9;border:1px solid #394552;border-radius:12px;padding:7px 9px}.nm{font-size:11px;font-weight:900;display:flex;justify-content:space-between}.bar{height:7px;background:#27313b;border-radius:10px;overflow:hidden;margin-top:5px}.fill{height:100%;width:100%;background:linear-gradient(90deg,#9af62f,#e8ff87)}#ef{background:linear-gradient(90deg,#ffbd37,#ff493a)}
+.arena{position:relative;width:min(96vw,560px);aspect-ratio:1/1;max-height:67svh}canvas{width:100%;height:100%;display:block}.call{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;pointer-events:none;font-size:38px;font-style:italic;font-weight:1000;text-shadow:0 4px 0 #000,0 0 18px #fff;opacity:0}.pop{animation:pop .72s ease-out}@keyframes pop{0%{opacity:0;transform:scale(.45)}22%{opacity:1;transform:scale(1.14)}65%{opacity:1}100%{opacity:0;transform:scale(1.42)}}
+.controls{width:min(96vw,560px);padding:3px 2px 8px}.btn{width:100%;border:0;border-radius:14px;padding:14px;font-size:18px;font-weight:1000;background:#d8ff2e;color:#0a0d0f;box-shadow:0 5px 0 #758e0b}.launch{display:none;background:#101720;border:1px solid #3a4653;border-radius:14px;padding:10px}.guide{text-align:center;font-size:12px;font-weight:800;margin-bottom:7px}.track{height:54px;background:#222b34;border-radius:12px;position:relative;overflow:hidden}.track:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#e84b38 0 18%,#ffb32d 18% 38%,#d8ff2e 38% 62%,#ffb32d 62% 82%,#e84b38 82%)}.needle{position:absolute;top:-4px;width:5px;height:62px;background:#fff;box-shadow:0 0 13px #fff;left:4%}.pull{width:100%;border:0;border-radius:11px;margin-top:8px;padding:13px;background:#fff;color:#111;font-weight:1000;font-size:17px}.tip{text-align:center;color:#8994a0;font-size:10px;margin-top:6px}
+</style></head>
+<body><div class="app">
+<div class="topbar"><div class="brand">杯王陀螺 <em>REAL BATTLE</em></div><div class="pts">你 <b id="pp">0</b> : <b id="ep">0</b> 對手</div></div>
+<div class="hud"><div class="card"><div class="nm"><span>🍵 茉香・攻擊型</span><span id="ps">100%</span></div><div class="bar"><div class="fill" id="pf"></div></div></div><div class="card"><div class="nm"><span>黑糖・平衡型 🧋</span><span id="es">100%</span></div><div class="bar"><div class="fill" id="ef"></div></div></div></div>
+<div class="arena"><canvas id="cv"></canvas><div class="call" id="call"></div></div>
+<div class="controls"><button class="btn" id="ready">⚡ 進入發射位置</button><div class="launch" id="launch"><div class="guide">像真人拉發射器：手指按住白色把手，快速往下拉</div><div class="track" id="track"><div class="needle" id="needle"></div></div><button class="pull" id="pull">按住這裡 ↓ 往下快速拉</button></div><div class="tip">發射後不能操控。勝負取決於發射力量、角度、碰撞、轉速與 X 軌道。</div></div>
+</div>
+<script>
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),call=document.getElementById('call');
+const ready=document.getElementById('ready'),launch=document.getElementById('launch'),pull=document.getElementById('pull'),needle=document.getElementById('needle');
+const pf=document.getElementById('pf'),ef=document.getElementById('ef'),ps=document.getElementById('ps'),es=document.getElementById('es');
+let W,H,cx,cy,R,player,enemy,state='idle',last=0,parts=[],shake=0,pPts=0,ePts=0,dragStart=null,launchPower=.75,launchTilt=0;
+function resize(){const r=cv.getBoundingClientRect(),d=devicePixelRatio||1;cv.width=r.width*d;cv.height=r.height*d;ctx.setTransform(d,0,0,d,0,0);W=r.width;H=r.height;cx=W/2;cy=H/2;R=W*.365}
+addEventListener('resize',resize);resize();
+function bey(x,y,type){return{x,y,vx:0,vy:0,r:W*.052,spin:100,angle:0,type,hit:0,rail:0,wobble:0}}
+function reset(){player=bey(cx-R*.46,cy-R*.06,'p');enemy=bey(cx+R*.43,cy+R*.05,'e');parts=[];shake=0;hud()}
+function hud(){pf.style.width=Math.max(0,player.spin)+'%';ef.style.width=Math.max(0,enemy.spin)+'%';ps.textContent=Math.max(0,player.spin|0)+'%';es.textContent=Math.max(0,enemy.spin|0)+'%';document.getElementById('pp').textContent=pPts;document.getElementById('ep').textContent=ePts}
+function say(t){call.textContent=t;call.className='call';void call.offsetWidth;call.className='call pop'}
+function arena(){ctx.save();if(shake>0)ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
+let g=ctx.createRadialGradient(cx,cy,10,cx,cy,R*1.3);g.addColorStop(0,'#35414c');g.addColorStop(.55,'#1a222a');g.addColorStop(.73,'#0b0e12');g.addColorStop(.9,'#222c35');g.addColorStop(1,'#07090c');ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(cx,cy,R*1.22,R*1.08,0,0,Math.PI*2);ctx.fill();
+ctx.strokeStyle='#606d78';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(cx,cy,R*.72,R*.64,0,0,Math.PI*2);ctx.stroke();
+ctx.strokeStyle='#d8ff2e';ctx.lineWidth=8;ctx.setLineDash([20,7]);ctx.beginPath();ctx.ellipse(cx,cy,R*.99,R*.87,0,.18,Math.PI*1.73);ctx.stroke();ctx.setLineDash([]);
+for(const a of [.62,2.52]){ctx.fillStyle='#020304';ctx.beginPath();ctx.arc(cx+Math.cos(a)*R*1.02,cy+Math.sin(a)*R*.9,R*.21,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#39434d';ctx.lineWidth=3;ctx.stroke()}
+ctx.restore()}
+function drawBey(o){ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.angle);let rr=o.r*(1+Math.sin(o.angle*3)*o.wobble*.05);let gr=ctx.createRadialGradient(-rr*.28,-rr*.3,1,0,0,rr);
+if(o.type==='p'){gr.addColorStop(0,'#efffd1');gr.addColorStop(.25,'#7fe73b');gr.addColorStop(.53,'#163b29');gr.addColorStop(.76,'#c9d0d5');gr.addColorStop(1,'#555f67')}else{gr.addColorStop(0,'#fff0c6');gr.addColorStop(.25,'#df812e');gr.addColorStop(.53,'#4c2116');gr.addColorStop(.76,'#d1d6da');gr.addColorStop(1,'#59616a')}
+ctx.fillStyle=gr;ctx.strokeStyle='#f0f3f5';ctx.lineWidth=2.5;ctx.beginPath();for(let i=0;i<16;i++){let a=i*Math.PI/8,rad=i%2?rr*.74:rr;ctx.lineTo(Math.cos(a)*rad,Math.sin(a)*rad)}ctx.closePath();ctx.fill();ctx.stroke();
+ctx.fillStyle=o.type==='p'?'#b8ff39':'#ff8133';ctx.beginPath();ctx.arc(0,0,rr*.34,0,Math.PI*2);ctx.fill();ctx.fillStyle='#101418';ctx.font=`900 ${rr*.42}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(o.type==='p'?'茶':'糖',0,1);ctx.restore()}
+function sparks(x,y,n=18){for(let i=0;i<n;i++){let a=Math.random()*6.283,s=2+Math.random()*6;parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:18+Math.random()*18})}}
+function step(o,dt){let speed=Math.hypot(o.vx,o.vy);o.x+=o.vx*dt;o.y+=o.vy*dt;o.angle+=(o.type==='p'?1:-1)*(.22+.17*o.spin/100)*dt;o.spin-=((o.type==='p'?.009:.0075)+speed*.0009)*dt;o.vx*=Math.pow(.997,dt);o.vy*=Math.pow(.997,dt);o.hit=Math.max(0,o.hit-dt);
+let dx=o.x-cx,dy=o.y-cy;let ex=dx/(R*1.03),ey=dy/(R*.91),ed=Math.hypot(ex,ey);
+if(ed>.78&&ed<1.02 && o.spin>22){ // X rail engagement
+  let tangX=-ey/(ed||1),tangY=ex/(ed||1);
+  if(o.type==='p' ? (o.vx*tangX+o.vy*tangY)>0 : (o.vx*tangX+o.vy*tangY)<0){o.rail+=dt}else{o.rail=Math.max(0,o.rail-dt*2)}
+  if(o.rail>10){let sign=o.type==='p'?1:-1;o.vx+=tangX*.18*sign*dt;o.vy+=tangY*.18*sign*dt;o.spin-=.018*dt}
+}else o.rail=0;
+if(ed>1.0&&ed<1.13){let nx=(dx/(R*1.03))/(ed||1),ny=(dy/(R*.91))/(ed||1);let dot=o.vx*nx+o.vy*ny;if(dot>0){o.vx-=1.72*dot*nx;o.vy-=1.72*dot*ny;o.spin-=.32*dot;o.wobble=Math.min(1,o.wobble+.05)}}
+if(ed>1.19)finish('XTREME FINISH','XTREME FINISH',o!==player,3);
+if(o.spin<24)o.wobble=Math.min(1,o.wobble+.0025*dt);
+}
+function collide(){let dx=enemy.x-player.x,dy=enemy.y-player.y,d=Math.hypot(dx,dy),min=player.r+enemy.r;if(d<min&&player.hit<=0&&enemy.hit<=0){let nx=dx/(d||1),ny=dy/(d||1);let rvx=enemy.vx-player.vx,rvy=enemy.vy-player.vy,closing=Math.abs(rvx*nx+rvy*ny);let impact=Math.max(2.2,closing);let push=impact*.72;player.vx-=nx*push;player.vy-=ny*push;enemy.vx+=nx*push;enemy.vy+=ny*push;player.spin-=impact*(enemy.type==='e'?.58:.7);enemy.spin-=impact*(player.type==='p'?.85:.65);player.wobble=Math.min(1,player.wobble+impact*.018);enemy.wobble=Math.min(1,enemy.wobble+impact*.025);player.hit=enemy.hit=6;sparks((player.x+enemy.x)/2,(player.y+enemy.y)/2,impact>6?28:16);shake=Math.min(13,impact*1.5);if(impact>7)say('HEAVY CLASH!');if(navigator.vibrate)navigator.vibrate(impact>7?[35,20,55]:25);
+ if(impact>9 && enemy.spin<55 && Math.random()<.13){finish('BURST FINISH','BURST FINISH',true,2)}
+}}
+function finish(text,kind,playerWon,points){if(state!=='battle')return;state='done';if(playerWon)pPts+=points;else ePts+=points;say(text+'  +'+points);hud();setTimeout(()=>{ready.style.display='block';ready.textContent=(pPts>=4||ePts>=4)?'🏆 新的一場':'⚡ 下一回合';if(pPts>=4||ePts>=4){pPts=ePts=0}},850)}
+function loop(ts){requestAnimationFrame(loop);let dt=Math.min(2,(ts-last)/16.67||1);last=ts;arena();if(state==='battle'){step(player,dt);step(enemy,dt);collide();if(player.spin<=0)finish('SPIN FINISH','SPIN',false,1);if(enemy.spin<=0)finish('SPIN FINISH','SPIN',true,1);hud()}drawBey(player);drawBey(enemy);
+for(let q of parts){q.x+=q.vx;q.y+=q.vy;q.vx*=.93;q.vy*=.93;q.l--;ctx.fillStyle=q.l%2?'#fff':'#d8ff2e';ctx.fillRect(q.x,q.y,3,3)}parts=parts.filter(q=>q.l>0);shake*=.8}
+reset();requestAnimationFrame(loop);
+ready.onclick=()=>{reset();ready.style.display='none';launch.style.display='block';state='aim';say('3・2・1')};
+function startDrag(e){if(state!=='aim')return;let y=e.touches?e.touches[0].clientY:e.clientY;dragStart={y,t:performance.now()};pull.textContent='↓ 快速往下拉！'}
+function endDrag(e){if(!dragStart||state!=='aim')return;let y=e.changedTouches?e.changedTouches[0].clientY:e.clientY,dy=Math.max(0,y-dragStart.y),ms=Math.max(50,performance.now()-dragStart.t);let velocity=dy/ms;launchPower=Math.max(.48,Math.min(1,velocity/1.25 + dy/500));launchTilt=(Math.random()-.5)*.55;dragStart=null;launch.style.display='none';state='battle';
+player.spin=76+24*launchPower;enemy.spin=86+Math.random()*12;let pA=-.42+launchTilt,eA=Math.PI+.25+(Math.random()-.5)*.4;let pv=3.1+4.2*launchPower,ev=4.7+Math.random()*1.7;player.vx=Math.cos(pA)*pv;player.vy=Math.sin(pA)*pv;enemy.vx=Math.cos(eA)*ev;enemy.vy=Math.sin(eA)*ev;say(launchPower>.9?'PERFECT SHOOT!':'GO SHOOT!');if(navigator.vibrate)navigator.vibrate(45)}
+pull.addEventListener('touchstart',startDrag,{passive:false});pull.addEventListener('touchend',endDrag,{passive:false});pull.addEventListener('pointerdown',startDrag);pull.addEventListener('pointerup',endDrag);
+</script></body></html>
