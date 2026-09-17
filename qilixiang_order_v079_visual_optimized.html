@@ -1,0 +1,89 @@
+<!doctype html><html lang=zh-Hant><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><title>七里香大同店｜點餐測試</title><style>
+*{box-sizing:border-box}body{margin:0;background:#f8f4ec;color:#292622;font-family:-apple-system,sans-serif}header{position:sticky;top:0;z-index:5;background:white;padding:14px;border-bottom:1px solid #ddd}header b{font-size:23px}#badge{float:right;background:#8d332d;color:white;padding:8px 11px;border-radius:20px}main,#cart{max-width:720px;margin:auto;padding:12px}main{padding-bottom:90px}h1{font-size:24px;margin:8px 0}h2{font-size:18px;margin:22px 0 8px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.drink{min-height:70px;text-align:left;border:1px solid #e1d8ca;background:white;border-radius:14px;padding:12px;font-size:14px}.drink em{display:block;color:#96362f;font-style:normal;font-weight:bold;margin-top:7px}dialog{width:min(94%,520px);border:0;border-radius:18px;padding:0}dialog::backdrop{background:#0008}.box{padding:17px}.box h3{font-size:22px;margin:0 0 8px}.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}label input{display:none}label span{display:block;text-align:center;border:1px solid #ddd;border-radius:10px;padding:10px 2px;font-size:12px}label input:checked+span{border:2px solid #96362f;color:#96362f;background:#fff2ee}.qty{display:flex;gap:15px;align-items:center;margin:10px 0}.qty button{width:42px;height:42px;border:0;border-radius:50%;font-size:20px}#add,#share{width:100%;border:0;border-radius:12px;padding:14px;background:#8d332d;color:white;font-weight:bold;font-size:16px}#close{float:right;border:0;background:#eee;border-radius:20px;width:34px;height:34px}.line{background:white;border:1px solid #e1d8ca;border-radius:12px;padding:11px;margin:7px 0}.line button{float:right}.meta{font-size:13px;color:#666;margin:4px 0}#sum{font-size:20px;font-weight:bold;text-align:right;margin:12px 0}.bottom{position:fixed;bottom:0;left:0;right:0;background:white;padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid #ddd}.bottom #bar{display:block;width:100%;max-width:720px;margin:auto;text-align:center;color:white;background:#8d332d;padding:15px;border:0;border-radius:13px;font-weight:bold;font-size:17px}
+</style><style>
+body{padding-bottom:170px}
+main{padding-bottom:170px}
+section{scroll-margin-top:90px}
+.bottom{padding-bottom:max(12px,env(safe-area-inset-bottom))}
+</style></head><body><header><b>七里香</b> <small>高雄大同店｜功能測試</small><span id=badge>0杯 $0</span></header><div style="max-width:720px;margin:10px auto 4px;padding:0 12px"><label for="nickname" style="font-weight:bold">訂購人暱稱（選填）</label><input id="nickname" maxlength="20" placeholder="例如：阿明、王小姐、A組" style="width:100%;margin-top:6px;padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px"><button id="lastOrderBtn" type="button" style="display:block;margin-top:12px;width:100%;min-height:66px;padding:10px 14px;border:2px solid #426a55;border-radius:14px;background:#fff;color:#294b3b;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,.08)"><span style="display:block;font-size:19px;font-weight:800;line-height:1.25">🔁 跟上次一樣</span><small id="lastOrderDetail" style="display:block;margin-top:5px;font-size:14px;font-weight:600;color:#5f6d66">快速加入上次點過的飲料</small></button></div><main><section><h1>純茶本味</h1><div class="grid"><button class="drink" data-n="古早味紅茶" data-p="30">古早味紅茶<b>$30</b></button><button class="drink" data-n="茉香綠茶" data-p="30">茉香綠茶<b>$30</b></button><button class="drink" data-n="高山青茶" data-p="30">高山青茶<b>$30</b></button><button class="drink" data-n="桂花青茶" data-p="30">桂花青茶<b>$30</b></button><button class="drink" data-n="烏龍綠茶" data-p="30">烏龍綠茶<b>$30</b></button><button class="drink" data-n="決明大麥" data-p="30">決明大麥<b>$30</b></button><button class="drink" data-n="黃金烏龍茶（冷泡）" data-p="35">黃金烏龍茶（冷泡）<b>$35</b></button><button class="drink" data-n="紅玉紅茶" data-p="35">紅玉紅茶<b>$35</b></button><button class="drink" data-n="蕎麥茶" data-p="35">蕎麥茶<b>$35</b></button><button class="drink" data-n="日式玄米茶" data-p="35">日式玄米茶<b>$35</b></button><button class="drink" data-n="仙草甘茶" data-p="40">仙草甘茶<b>$40</b></button></div></section><section><h1>濃純鮮奶</h1><div class="grid"><button class="drink" data-n="奶蓋紅" data-p="50">奶蓋紅<b>$50</b></button><button class="drink" data-n="奶蓋綠" data-p="50">奶蓋綠<b>$50</b></button><button class="drink" data-n="奶蓋青" data-p="50">奶蓋青<b>$50</b></button><button class="drink" data-n="鮮奶紅" data-p="55">鮮奶紅<b>$55</b></button><button class="drink" data-n="鮮奶綠" data-p="55">鮮奶綠<b>$55</b></button><button class="drink" data-n="鮮奶青" data-p="55">鮮奶青<b>$55</b></button><button class="drink" data-n="冬瓜鮮奶" data-p="55">冬瓜鮮奶<b>$55</b></button><button class="drink" data-n="紅玉拿鐵" data-p="60">紅玉拿鐵<b>$60</b></button><button class="drink" data-n="仙草凍鮮奶茶" data-p="65">仙草凍鮮奶茶<b>$65</b></button><button class="drink" data-n="黑糖鮮奶茶" data-p="60">黑糖鮮奶茶<b>$60</b></button><button class="drink" data-n="珍珠鮮奶茶" data-p="65">珍珠鮮奶茶<b>$65</b></button><button class="drink" data-n="阿華田拿鐵" data-p="65">阿華田拿鐵<b>$65</b></button><button class="drink" data-n="咖啡拿鐵" data-p="65">咖啡拿鐵<b>$65</b></button><button class="drink" data-n="可可鮮奶" data-p="65">可可鮮奶<b>$65</b></button></div></section><section><h1>復刻奶香</h1><div class="grid"><button class="drink" data-n="奶茶" data-p="45">奶茶<b>$45</b></button><button class="drink" data-n="奶綠" data-p="45">奶綠<b>$45</b></button><button class="drink" data-n="奶青" data-p="45">奶青<b>$45</b></button><button class="drink" data-n="黑糖奶茶" data-p="50">黑糖奶茶<b>$50</b></button><button class="drink" data-n="日式玄米奶" data-p="50">日式玄米奶<b>$50</b></button><button class="drink" data-n="烏龍奶茶" data-p="50">烏龍奶茶<b>$50</b></button><button class="drink" data-n="雙色珍珠奶茶" data-p="55">雙色珍珠奶茶<b>$55</b></button><button class="drink" data-n="薄荷奶茶" data-p="55">薄荷奶茶<b>$55</b></button><button class="drink" data-n="阿華田" data-p="55">阿華田<b>$55</b></button><button class="drink" data-n="冰咖啡" data-p="55">冰咖啡<b>$55</b></button><button class="drink" data-n="可可亞" data-p="55">可可亞<b>$55</b></button><button class="drink" data-n="布丁奶茶" data-p="60">布丁奶茶<b>$60</b></button></div></section><section><h1>特調茶飲</h1><div class="grid"><button class="drink" data-n="梅子紅" data-p="40">梅子紅<b>$40</b></button><button class="drink" data-n="梅子綠" data-p="40">梅子綠<b>$40</b></button><button class="drink" data-n="梅子青" data-p="40">梅子青<b>$40</b></button><button class="drink" data-n="蜂蜜紅" data-p="45">蜂蜜紅<b>$45</b></button><button class="drink" data-n="蜂蜜綠" data-p="45">蜂蜜綠<b>$45</b></button><button class="drink" data-n="蜂蜜青" data-p="45">蜂蜜青<b>$45</b></button><button class="drink" data-n="檸檬紅" data-p="45">檸檬紅<b>$45</b></button><button class="drink" data-n="檸檬綠" data-p="45">檸檬綠<b>$45</b></button><button class="drink" data-n="檸檬青" data-p="45">檸檬青<b>$45</b></button><button class="drink" data-n="薄荷紅" data-p="50">薄荷紅<b>$50</b></button><button class="drink" data-n="薄荷綠" data-p="50">薄荷綠<b>$50</b></button><button class="drink" data-n="薄荷青" data-p="50">薄荷青<b>$50</b></button><button class="drink" data-n="脆梅綠茶" data-p="50">脆梅綠茶<b>$50</b></button><button class="drink" data-n="金鑽鳳梨青茶" data-p="50">金鑽鳳梨青茶<b>$50</b></button><button class="drink" data-n="鮮榨柳丁綠" data-p="65">鮮榨柳丁綠<b>$65</b></button><button class="drink" data-n="鮮果百香綠" data-p="65">鮮果百香綠<b>$65</b></button><button class="drink" data-n="香橙百香綠" data-p="70">香橙百香綠<b>$70</b></button></div></section><section><h1>現打果汁</h1><div class="grid"><button class="drink" data-n="西瓜汁" data-p="40">西瓜汁<b>$40</b></button><button class="drink" data-n="西瓜牛奶" data-p="50">西瓜牛奶<b>$50</b></button><button class="drink" data-n="香蕉牛奶" data-p="50">香蕉牛奶<b>$50</b></button><button class="drink" data-n="蘋果牛奶" data-p="55">蘋果牛奶<b>$55</b></button><button class="drink" data-n="綜合果汁" data-p="60">綜合果汁<b>$60</b></button><button class="drink" data-n="木瓜牛奶" data-p="65">木瓜牛奶<b>$65</b></button><button class="drink" data-n="芒果冰沙（季）" data-p="85">芒果冰沙（季）<b>$85</b></button><button class="drink" data-n="芒果牛奶（季）" data-p="90">芒果牛奶（季）<b>$90</b></button><button class="drink" data-n="草莓牛奶（季）" data-p="85">草莓牛奶（季）<b>$85</b></button></div></section><section><h1>古法冬瓜</h1><div class="grid"><button class="drink" data-n="冬瓜茶" data-p="30">冬瓜茶<b>$30</b></button><button class="drink" data-n="冬瓜紅" data-p="35">冬瓜紅<b>$35</b></button><button class="drink" data-n="冬瓜綠" data-p="35">冬瓜綠<b>$35</b></button><button class="drink" data-n="冬瓜青" data-p="35">冬瓜青<b>$35</b></button><button class="drink" data-n="仙冬冰茶" data-p="40">仙冬冰茶<b>$40</b></button><button class="drink" data-n="冬瓜檸檬" data-p="45">冬瓜檸檬<b>$45</b></button><button class="drink" data-n="冬瓜金桔" data-p="45">冬瓜金桔<b>$45</b></button><button class="drink" data-n="寒天仙冬冰茶" data-p="55">寒天仙冬冰茶<b>$55</b></button></div></section><section><h1>鮮果飲</h1><div class="grid"><button class="drink" data-n="金桔檸檬" data-p="50">金桔檸檬<b>$50</b></button><button class="drink" data-n="檸檬蜜茶" data-p="55">檸檬蜜茶<b>$55</b></button><button class="drink" data-n="鮮桔蜜茶" data-p="55">鮮桔蜜茶<b>$55</b></button><button class="drink" data-n="檸檬汁" data-p="50">檸檬汁<b>$50</b></button><button class="drink" data-n="水果茶" data-p="70">水果茶<b>$70</b></button></div></section><section><h1>養身飲</h1><div class="grid"><button class="drink" data-n="蜜茶" data-p="40">蜜茶<b>$40</b></button><button class="drink" data-n="仙楂洛神" data-p="45">仙楂洛神<b>$45</b></button><button class="drink" data-n="洛神檸檬" data-p="50">洛神檸檬<b>$50</b></button><button class="drink" data-n="黑糖薑母茶（季／500ml）" data-p="50">黑糖薑母茶（季／500ml）<b>$50</b></button><button class="drink" data-n="桂圓紅棗茶（季／500ml）" data-p="60">桂圓紅棗茶（季／500ml）<b>$60</b></button></div></section><section><h1>益菌多</h1><div class="grid"><button class="drink" data-n="綠茶多多" data-p="45">綠茶多多<b>$45</b></button><button class="drink" data-n="檸檬多多" data-p="60">檸檬多多<b>$60</b></button><button class="drink" data-n="百香多多" data-p="75">百香多多<b>$75</b></button></div></section></main>
+<section id=cart style="display:none"><div id=lines></div><div id=sum></div><button id=share></button></section><div class=bottom><button id=bar type=button>0杯｜$0　確認訂單</button></div>
+<dialog id=dlg><div class=box><button id=close>×</button><h3 id=dn></h3><b id=dp></b><h4>① 甜度</h4><div class=opts id=sugar></div><h4>② 冰塊</h4><div class=opts id=ice></div><h4>③ 加料</h4><div class=opts id=tops></div><h4>④ 杯數</h4><div class=qty><button id=minus>−</button><strong id=q>1</strong><button id=plus>＋</button></div><button id=add>＋ 加入訂單</button></div></dialog>
+<dialog id=confirmDlg><div class=box><button id=confirmClose>×</button><h3>確認訂單</h3><div id=confirmLines></div><div id=confirmSum></div>
+<div style="margin-top:14px">
+  <h4 style="margin:8px 0">取餐方式</h4>
+  <div class="opts" id="pickup"><label><input type="radio" name="pickup" value="到店自取" checked><span>🏪 到店自取</span></label><label><input type="radio" name="pickup" value="跟這一趟外送"><span>🛵 跟這一趟外送</span></label></div>
+  <h4 style="margin:12px 0 8px">付款方式</h4>
+  <div class="opts" id="payment"><label><input type="radio" name="payment" value="現金" checked><span>💵 現金</span></label><label><input type="radio" name="payment" value="LINE Pay"><span>LINE Pay</span></label></div>
+</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px"><button id=continueBtn type=button style="padding:13px;border:1px solid #ccc;border-radius:12px;background:white;font-weight:bold">繼續加點</button><button id=sendBtn type=button style="padding:13px;border:0;border-radius:12px;background:#426a55;color:white;font-weight:bold">LINE 傳送訂單</button><button id=copyBtn type=button style="grid-column:1/-1;padding:11px;border:1px solid #ccc;border-radius:12px;background:white;font-weight:bold">複製訂單文字</button><a id="addLineBtn" href="https://line.me/ti/p/0kMejh4EPJ" style="grid-column:1/-1;text-align:center;padding:11px;border:1px solid #06c755;border-radius:12px;background:#fff;color:#06c755;font-weight:bold;text-decoration:none">第一次訂購？先加入店家 LINE</a></div></div></dialog>
+<script>
+const $=x=>document.querySelector(x),cart=[];let cur,q=1;
+const LAST_KEY='qilixiang_last_drink_v1',NICK_KEY='qilixiang_nickname_v1';
+function loadMemory(){
+ try{
+  const nick=localStorage.getItem(NICK_KEY)||''; if(nick)$('#nickname').value=nick;
+  const detail=$('#lastOrderDetail'); detail.textContent='快速加入上次點過的飲料';
+  const x=JSON.parse(localStorage.getItem(LAST_KEY)||'null');
+  if(x&&x.n){detail.textContent=x.n+'・'+x.s+'・'+x.i+(x.t&&x.t.length?'・＋'+x.t.join('＋'):'')}
+ }catch(e){}
+}
+function rememberDrink(x){try{localStorage.setItem(LAST_KEY,JSON.stringify({n:x.n,p:x.p,q:1,s:x.s,i:x.i,t:x.t||[]}))}catch(e){};loadMemory()}
+function addLastDrink(){
+ try{
+  const x=JSON.parse(localStorage.getItem(LAST_KEY)||'null');if(!x||!x.n){alert('還沒有上次點餐紀錄');return}
+  cart.push({n:x.n,p:+x.p,q:1,s:x.s,i:x.i,t:[...(x.t||[])]});render();
+  alert('已加入：'+x.n+'｜'+x.s+'｜'+x.i+(x.t.length?'｜＋'+x.t.join('＋'):''))
+ }catch(e){alert('無法讀取上次點餐紀錄')}
+}
+
+function radios(id,a,def){$(id).innerHTML=a.map(x=>`<label><input type=radio name="${id}" value="${x}" ${x==def?'checked':''}><span>${x}</span></label>`).join('')}
+function sweetOptions(name){const w=['冬瓜茶','冬瓜紅','冬瓜綠','冬瓜青','仙冬冰茶','冬瓜檸檬','冬瓜金桔','寒天仙冬冰茶'],h=['蜜茶','仙楂洛神','洛神檸檬','黑糖薑母茶（季／500ml）','桂圓紅棗茶（季／500ml）'];if(w.includes(name))return [['多冬瓜','正常冬瓜','少冬瓜'],'正常冬瓜'];if(h.includes(name))return [['甜度固定'],'甜度固定'];return [['正常甜','八分糖','七分糖','五分糖','三分糖','一分糖','無糖'],'五分糖']}
+function openD(b){cur=b;q=1;$('#q').textContent=1;$('#dn').textContent=b.dataset.n;$('#dp').textContent='$'+b.dataset.p;let sw=sweetOptions(b.dataset.n);radios('#sugar',sw[0],sw[1]);radios('#ice',['正常冰','少冰','微冰','去冰','常溫','溫','熱'],'少冰');$('#tops').innerHTML=[['黑白珍珠',10],['嫩仙草',10],['椰果',10],['咖啡凍',10],['寒天晶球',15],['統一布丁',15]].map(x=>`<label><input type=checkbox value="${x[0]}" data-p="${x[1]}"><span>${x[0]} +${x[1]}</span></label>`).join('');$('#dlg').showModal()}
+document.querySelectorAll('.drink').forEach(b=>b.onclick=()=>openD(b));$('#close').onclick=()=>$('#dlg').close();$('#minus').onclick=()=>{q=Math.max(1,q-1);$('#q').textContent=q};$('#plus').onclick=()=>{q++;$('#q').textContent=q};
+$('#add').onclick=()=>{let t=[...$('#tops').querySelectorAll(':checked')],extra=t.reduce((s,x)=>s+ +x.dataset.p,0),item={n:cur.dataset.n,p:+cur.dataset.p+extra,q,s:$('#sugar :checked').value,i:$('#ice :checked').value,t:t.map(x=>x.value)};cart.push(item);rememberDrink(item);$('#dlg').close();render()};
+function render(){let cups=cart.reduce((s,x)=>s+x.q,0),sum=cart.reduce((s,x)=>s+x.p*x.q,0);$('#badge').textContent=cups+'杯 $'+sum;$('#bar').textContent=cups+'杯｜$'+sum+'　確認訂單';$('#lines').innerHTML=cart.length?cart.map((x,i)=>`<div class=line><button onclick="cart.splice(${i},1);render()">刪除</button><b>${x.n} ×${x.q}</b><div class=meta>${x.s}／${x.i}${x.t.length?'／＋'+x.t.join('＋'):''}</div><b>$${x.p*x.q}</b></div>`).join(''):'目前還沒有飲料。';$('#sum').textContent=cart.length?'共 '+cups+' 杯｜合計 $'+sum:''}
+
+function showConfirm(){
+ if(!cart.length){alert('請先加入飲料');return}
+ let cups=cart.reduce((s,x)=>s+x.q,0),sum=cart.reduce((s,x)=>s+x.p*x.q,0);
+ let nick=$('#nickname').value.trim(); $('#confirmLines').innerHTML=(nick?'<div style="padding:10px 0;font-weight:bold">訂購人：'+nick.replace(/[<>&"]/g,'')+'</div>':'')+cart.map((x,i)=>`<div class=line>
+ <button type=button onclick="cart.splice(${i},1);render();showConfirm()">刪除</button>
+ <b>${x.n} ×${x.q}</b><div class=meta>${x.s}／${x.i}${x.t.length?'／＋'+x.t.join('＋'):''}</div>
+ <div class=qty><button type=button onclick="if(cart[${i}].q>1)cart[${i}].q--;render();showConfirm()">−</button><strong>${x.q}</strong><button type=button onclick="cart[${i}].q++;render();showConfirm()">＋</button></div>
+ <b>$${x.p*x.q}</b></div>`).join('');
+ $('#confirmSum').innerHTML='<div id=sum style="font-size:20px;font-weight:bold;text-align:right;margin-top:12px">共 '+cups+' 杯｜合計 $'+sum+'</div>';
+ if(!$('#confirmDlg').open) $('#confirmDlg').showModal();
+}
+$('#bar').onclick=()=>{try{localStorage.setItem(NICK_KEY,$('#nickname').value.trim())}catch(e){};showConfirm()};
+$('#lastOrderBtn').onclick=addLastDrink;
+loadMemory();
+$('#confirmClose').onclick=()=>$('#confirmDlg').close();
+$('#continueBtn').onclick=()=>$('#confirmDlg').close();
+$('#sendBtn').onclick=()=>{ $('#confirmDlg').close(); $('#share').click(); };
+
+
+function orderText(){
+  const nick=$('#nickname').value.trim();
+  let cups=cart.reduce((a,x)=>a+x.q,0),sum=cart.reduce((a,x)=>a+x.p*x.q,0);
+  let text='【七里香大同店｜追加訂單】\n';
+  if(nick) text+='訂購人：'+nick+'\n';
+  const pickup=document.querySelector('input[name="pickup"]:checked');
+  const payment=document.querySelector('input[name="payment"]:checked');
+  text+='取餐：'+(pickup?pickup.value:'到店自取')+'\n';
+  text+='付款：'+(payment?payment.value:'現金')+'\n';
+  cart.forEach((x,i)=>{text+=(i+1)+'. '+x.n+' ×'+x.q+'｜'+x.s+'｜'+x.i+(x.t.length?'｜＋'+x.t.join('＋'):'')+'｜$'+(x.p*x.q)+'\n'});
+  text+='共 '+cups+' 杯｜合計 $'+sum;
+  return text;
+}
+async function copyOrder(){
+  const text=orderText();
+  try{await navigator.clipboard.writeText(text);alert('訂單文字已複製，可以直接貼到 LINE')}catch(e){prompt('請複製訂單',text)}
+}
+function sendLine(){
+  const text=orderText();
+  // LINE share URL opens LINE directly instead of iOS generic share sheet.
+  location.href='https://line.me/R/share?text='+encodeURIComponent(text);
+}
+$('#sendBtn').onclick=sendLine;
+$('#copyBtn').onclick=copyOrder;
+$('#share').onclick=copyOrder;
+</script></body></html>
