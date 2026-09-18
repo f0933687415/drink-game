@@ -1,0 +1,67 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>七里香大同店｜智慧庫存 V7</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f3ee;color:#172019;font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif}
+main{max-width:700px;margin:auto;padding:18px 14px 100px}header{display:flex;justify-content:space-between;align-items:center;margin:3px 2px 17px}
+small,.muted{color:#747c77}.brand{font-size:12px}.title{font-size:24px;font-weight:900;margin-top:2px}.v{font-size:12px;font-weight:900;background:#e4f0e8;color:#176d46;padding:7px 10px;border-radius:99px}
+.card{background:#fff;border:1px solid #e5e1d7;border-radius:20px;padding:16px;margin-bottom:11px;box-shadow:0 3px 14px #00000008}
+.hero h2{margin:0 0 5px;font-size:20px}.hero p{margin:0;font-size:13px;line-height:1.5;color:#6f7872}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:13px}.sum{border-radius:14px;padding:11px;background:#f5f5f1}.sum b{font-size:22px;display:block}.sum span{font-size:11px;color:#747c77}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.big{border:0;border-radius:16px;padding:15px;font-size:15px;font-weight:900}.primary{background:#1b2921;color:#fff}.secondary{background:#e9ede8;color:#233029}
+.section{font-weight:900;font-size:16px;margin:20px 3px 9px}.ask{display:flex;gap:11px;align-items:start}.dot{width:12px;height:12px;border-radius:50%;margin-top:5px;flex:0 0 auto}.red{background:#c64545}.yellow{background:#d39a29}.gray{background:#a5aaa6}.green{background:#2b8a5d}
+.ask h3{margin:0;font-size:17px}.ask p{margin:4px 0 10px;font-size:12px;color:#727a75;line-height:1.45}
+.choice{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.choice button{border:1px solid #dfddd5;background:#fff;border-radius:12px;padding:10px 4px;font-weight:800;color:#334039}
+.rhythm{display:flex;justify-content:space-between;gap:10px;align-items:center}.rhythm b{font-size:16px}.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}.chip{background:#f1f2ee;border-radius:99px;padding:5px 7px;font-size:11px;color:#5e6862}
+.more{width:100%;border:0;background:transparent;color:#68726c;font-weight:800;padding:9px}
+.sheet{display:none;position:fixed;inset:0;background:#0005;z-index:10;align-items:end}.sheet.on{display:flex}.box{width:100%;max-width:700px;margin:auto;background:#fff;border-radius:25px 25px 0 0;padding:19px 15px calc(20px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto}
+.box h2{margin:0 0 5px}.close{float:right;border:0;background:#eee;border-radius:99px;width:34px;height:34px;font-size:18px}
+.listrow{border-bottom:1px solid #ece9e1;padding:12px 0}.listrow:last-child{border:0}.rowhead{display:flex;justify-content:space-between;align-items:center}.rowhead b{font-size:15px}
+.counter{display:flex;align-items:center;gap:8px}.counter button{width:34px;height:34px;border:0;border-radius:10px;background:#edf0eb;font-size:20px}.counter input{width:52px;text-align:center;border:0;font-size:18px;font-weight:800}
+.percent{display:flex;gap:4px;margin-top:8px;overflow:auto}.percent button{min-width:52px;border:1px solid #dedbd2;background:#fff;border-radius:10px;padding:8px 5px;font-size:11px;font-weight:800}.percent button.on{background:#1b2921;color:#fff}
+.save{width:100%;border:0;border-radius:14px;background:#1b2921;color:#fff;padding:14px;font-size:15px;font-weight:900;margin-top:13px}
+select,input[type=date]{width:100%;border:1px solid #dedbd2;background:#fff;border-radius:12px;padding:11px;font-size:15px;margin-top:8px}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#ffffffef;backdrop-filter:blur(12px);border-top:1px solid #e5e1d8;padding:7px 10px calc(7px + env(safe-area-inset-bottom));z-index:5}.bottom>div{max-width:700px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr)}.bottom button{border:0;background:none;padding:9px;color:#6d756f;font-weight:850}.bottom button:first-child{color:#172019}
+.toast{display:none;position:fixed;left:50%;bottom:85px;transform:translateX(-50%);background:#172019;color:#fff;border-radius:12px;padding:10px 14px;z-index:30;font-size:13px;white-space:nowrap}
+</style></head><body><main><header><div><div class="brand">七里香大同店</div><div class="title">今天的庫存</div></div><div class="v">V7</div></header>
+<section class="card hero"><h2>只處理需要注意的</h2><p>系統依歷史到貨節奏決定哪些品項值得確認。其他品項今天不用碰。</p>
+<div class="summary"><div class="sum"><b id="needN">—</b><span>建議確認</span></div><div class="sum"><b id="countN">—</b><span>已有盤點</span></div><div class="sum"><b>6</b><span>歷史貨單</span></div></div></section>
+<div class="quick"><button class="big primary" onclick="openReceipt()">📦 收到新貨</button><button class="big secondary" onclick="openCount()">✓ 快速盤點</button></div>
+<div class="section">今天問這些就好</div><div id="asks"></div>
+<div class="section">系統正在學的補貨節奏</div><div id="rhythms"></div>
+</main>
+<div class="bottom"><div><button>今天</button><button onclick="openCount()">盤點</button><button onclick="document.getElementById('rhythms').scrollIntoView({behavior:'smooth'})">節奏</button></div></div>
+
+<div class="sheet" id="countSheet"><div class="box"><button class="close" onclick="closeSheet('countSheet')">×</button><h2>快速盤點</h2><div class="muted" style="font-size:12px">不用逐項進頁面。走一圈，看到多少直接填；不想盤的留空即可。</div><input type="date" id="countDate"><div id="countRows"></div><button class="save" onclick="saveBatchCount()">完成盤點</button></div></div>
+
+<div class="sheet" id="receiptSheet"><div class="box"><button class="close" onclick="closeSheet('receiptSheet')">×</button><h2>收到新貨</h2><div class="muted" style="font-size:12px">只記品項與數量，不顯示價格。</div><select id="receiptItem"></select><input type="date" id="receiptDate"><div style="display:flex;gap:8px;margin-top:8px"><input id="receiptQty" type="number" min="0" step=".1" placeholder="到貨數量" style="flex:1;border:1px solid #dedbd2;border-radius:12px;padding:11px;font-size:16px"><button class="big primary" onclick="saveReceipt()">儲存</button></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const hist=[{"date": "2026-08-01", "items": [["D0014", "700紙杯", 2, "箱"], ["C0017", "仙草凍汁", 2, "單位"], ["C0022", "膠膜", 1, "捲"], ["A0004", "青茶", 5, "斤"], ["B0025", "金鑽鳳梨", 4, "單位"], ["B0002", "七里香奶精", 1, "單位"], ["A0011", "台糖黑糖", 1, "包"], ["A0003", "綠茶", 10, "斤"]]}, {"date": "2026-08-02", "items": [["D0014", "700紙杯", 2, "箱"], ["C0017", "仙草凍汁", 2, "單位"], ["A0004", "青茶", 5, "斤"], ["A0001", "烏龍綠", 5, "斤"], ["B0025", "金鑽鳳梨", 4, "單位"], ["A0011", "台糖黑糖", 2, "包"], ["A0019", "玄米玉露", 2, "單位"], ["A0021", "洛神", 10, "單位"], ["C0014", "脆梅汁", 1, "單位"]]}, {"date": "2026-08-03", "items": [["A0003", "綠茶", 10, "斤"], ["A0002", "紅茶", 10, "斤"], ["A0004", "青茶", 10, "斤"], ["D0024", "鮮奶油", 1, "單位"], ["D0014", "700紙杯", 2, "箱"]]}, {"date": "2026-08-10", "items": [["D0014", "700紙杯", 2, "箱"], ["A0003", "綠茶", 10, "斤"], ["A0002", "紅茶", 10, "斤"], ["A0004", "青茶", 10, "斤"], ["A0001", "烏龍綠", 5, "斤"], ["A0008", "黃金烏龍茶", 5, "斤"], ["C0022", "膠膜", 2, "捲"], ["B0002", "七里香奶精", 1, "單位"], ["A0021", "洛神", 10, "單位"]]}, {"date": "2026-08-14", "items": [["A0003", "綠茶", 10, "斤"], ["A0011", "台糖黑糖", 2, "包"], ["A0019", "玄米玉露", 2, "單位"], ["B0025", "金鑽鳳梨", 4, "單位"], ["C0014", "脆梅汁", 1, "單位"], ["C0017", "仙草凍汁", 2, "單位"], ["D0014", "700紙杯", 2, "箱"]]}, {"date": "2026-08-20", "items": [["A0002", "紅茶", 10, "斤"], ["A0004", "青茶", 5, "斤"], ["A0008", "黃金烏龍茶", 5, "斤"], ["A0011", "台糖黑糖", 1, "包"], ["C0017", "仙草凍汁", 3, "單位"], ["C0022", "膠膜", 1, "捲"], ["D0014", "700紙杯", 2, "箱"], ["D0024", "鮮奶油", 2, "單位"]]}];let flat=[];hist.forEach(e=>e.items.forEach(x=>flat.push({date:e.date,code:x[0],name:x[1],qty:x[2],unit:x[3]})));
+let G={};flat.forEach(x=>{if(!G[x.code])G[x.code]={code:x.code,name:x.name,unit:x.unit,rows:[]};G[x.code].rows.push(x)});const items=Object.values(G);
+const get=(k)=>JSON.parse(localStorage.getItem(k)||'[]'), set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+function gaps(it){let r=[...it.rows,...get('qlx_v7_receipts').filter(x=>x.code===it.code)].sort((a,b)=>a.date.localeCompare(b.date)),g=[];for(let i=1;i<r.length;i++){let d=(new Date(r[i].date)-new Date(r[i-1].date))/86400000;if(d>0)g.push(d)}return {rows:r,avg:g.length?g.reduce((a,b)=>a+b,0)/g.length:null}}
+function lastCount(code){return get('qlx_v7_counts').filter(x=>x.code===code).sort((a,b)=>b.date.localeCompare(a.date))[0]}
+function latestDate(it){let s=gaps(it).rows;return s.length?s[s.length-1].date:null}
+function needScore(it){let g=gaps(it),lc=lastCount(it.code);if(!lc)return 2;if(!g.avg)return 0;let age=(new Date()-new Date(lc.date))/86400000;return age>=Math.max(2,g.avg*.7)?1:0}
+function render(){
+ let need=items.filter(x=>needScore(x)>0).sort((a,b)=>needScore(b)-needScore(a)).slice(0,5);
+ document.getElementById('needN').textContent=need.length;
+ document.getElementById('countN').textContent=new Set(get('qlx_v7_counts').map(x=>x.code)).size;
+ document.getElementById('asks').innerHTML=need.length?need.map(it=>{let lc=lastCount(it.code),g=gaps(it);return `<section class="card"><div class="ask"><i class="dot ${lc?'yellow':'gray'}"></i><div style="flex:1"><h3>${it.name}</h3><p>${lc?'距離上次盤點已一段時間，快速確認現場狀態。':'還沒有實際盤點，先給系統一個基準點。'}${g.avg?` 歷史平均約 ${g.avg.toFixed(1)} 天到貨一次。`:''}</p><div class="choice"><button onclick="quickState('${it.code}','還很多')">還很多</button><button onclick="quickState('${it.code}','差不多')">差不多</button><button onclick="quickState('${it.code}','快沒了')">快沒了</button></div></div></div></section>`}).join(''):'<section class="card muted">今天沒有需要特別確認的品項。</section>';
+ let top=[...items].sort((a,b)=>b.rows.length-a.rows.length).slice(0,7);
+ document.getElementById('rhythms').innerHTML=top.map(it=>{let g=gaps(it),last=latestDate(it);return `<section class="card"><div class="rhythm"><div><b>${it.name}</b><div class="chips"><span class="chip">到貨 ${g.rows.length} 次</span><span class="chip">平均 ${g.avg?g.avg.toFixed(1)+' 天':'累積中'}</span><span class="chip">最近 ${last?last.slice(5).replace('-','/'):''}</span></div></div><span style="font-size:20px">›</span></div></section>`}).join('');
+}
+function quickState(code,state){let a=get('qlx_v7_states');a.push({code,state,date:new Date().toISOString().slice(0,10)});set('qlx_v7_states',a);toast(G[code].name+'：'+state+' ✓')}
+document.getElementById('countDate').value=new Date().toISOString().slice(0,10);document.getElementById('receiptDate').value=new Date().toISOString().slice(0,10);
+function openCount(){document.getElementById('countRows').innerHTML=items.map(it=>`<div class="listrow" data-code="${it.code}"><div class="rowhead"><b>${it.name}</b><div class="counter"><button onclick="step(this,-1)">−</button><input class="whole" type="number" min="0" placeholder="—"><button onclick="step(this,1)">＋</button></div></div><div class="percent"><button data-v="1">100%</button><button data-v=".75">75%</button><button data-v=".5">50%</button><button data-v=".25">25%</button><button data-v=".1">快沒了</button></div></div>`).join('');document.querySelectorAll('.percent button').forEach(b=>b.onclick=()=>{let p=b.parentElement;p.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on')});document.getElementById('countSheet').classList.add('on')}
+function step(b,n){let i=b.parentElement.querySelector('input');i.value=Math.max(0,(+i.value||0)+n)}
+function saveBatchCount(){let a=get('qlx_v7_counts'),date=document.getElementById('countDate').value;document.querySelectorAll('.listrow').forEach(r=>{let i=r.querySelector('.whole'),p=r.querySelector('.percent .on');if(i.value!==''||p){a.push({code:r.dataset.code,date,qty:(+i.value||0)+(p?+p.dataset.v:0)})}});set('qlx_v7_counts',a);closeSheet('countSheet');render();toast('這次盤點已儲存 ✓')}
+document.getElementById('receiptItem').innerHTML=items.map(x=>`<option value="${x.code}">${x.name}（${x.unit}）</option>`).join('');
+function openReceipt(){document.getElementById('receiptSheet').classList.add('on')}
+function saveReceipt(){let code=document.getElementById('receiptItem').value,qty=+document.getElementById('receiptQty').value;if(!(qty>0)){toast('請輸入到貨數量');return}let a=get('qlx_v7_receipts');a.push({code,name:G[code].name,unit:G[code].unit,qty,date:document.getElementById('receiptDate').value});set('qlx_v7_receipts',a);document.getElementById('receiptQty').value='';closeSheet('receiptSheet');render();toast('已記錄 '+G[code].name+' 到貨 ✓')}
+function closeSheet(id){document.getElementById(id).classList.remove('on')}
+function toast(s){let t=document.getElementById('toast');t.textContent=s;t.style.display='block';setTimeout(()=>t.style.display='none',1600)}
+render();
+</script></body></html>
