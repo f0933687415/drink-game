@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>鯛魚燒大釣場</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif;background:#07172b;color:#fff;overflow:hidden}
+#game{position:relative;width:100vw;height:100vh;max-width:520px;margin:auto;background:linear-gradient(#ffb43b 0 16%,#58c7e8 16% 31%,#087bb7 31% 100%);overflow:hidden}
+.sun{position:absolute;right:24px;top:30px;width:62px;height:62px;border-radius:50%;background:#ffe469;box-shadow:0 0 28px #fff2a0}
+.title{position:absolute;top:18px;left:18px;font-size:26px;font-weight:900;text-shadow:0 3px #7d3500;z-index:5}
+.hud{position:absolute;top:72px;left:14px;right:14px;display:flex;justify-content:space-between;z-index:7}
+.badge{background:#07172bd9;border:2px solid #ffffff55;border-radius:14px;padding:8px 12px;font-weight:800}
+.waterline{position:absolute;top:29%;width:100%;height:25px;background:radial-gradient(ellipse at 50% 0,#bff6ff 0 12%,transparent 13%) 0 0/45px 20px repeat-x;opacity:.9}
+#rod{position:absolute;top:8%;left:50%;width:8px;height:28%;background:#4d2b18;transform-origin:top;transform:rotate(-13deg);border-radius:5px;z-index:4}
+#line{position:absolute;top:24%;left:50%;width:2px;height:36%;background:#e8f7ff;z-index:3}
+#hook{position:absolute;left:calc(50% - 10px);top:58%;font-size:28px;z-index:6;filter:drop-shadow(0 2px 2px #000)}
+.fish{position:absolute;font-size:42px;filter:drop-shadow(0 4px 2px #003c61);user-select:none;transition:filter .15s}
+.fish::after{content:"";position:absolute;inset:10px 3px;border-radius:50%;background:#d58a35;z-index:-1}
+.gold{filter:drop-shadow(0 0 12px #fff06a) drop-shadow(0 4px 2px #5b3500);font-size:48px}
+.gold::after{background:#ffd52f}
+.bomb{font-size:38px}
+#msg{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%) scale(.8);font-weight:1000;font-size:30px;text-align:center;z-index:20;opacity:0;pointer-events:none;text-shadow:0 4px 0 #542300}
+#powerWrap{position:absolute;bottom:102px;left:24px;right:24px;height:24px;border:3px solid #fff;border-radius:14px;background:#132d47;overflow:hidden;z-index:10}
+#power{height:100%;width:0;background:linear-gradient(90deg,#55e56e,#ffe14c,#ff4d39)}
+#btn{position:absolute;bottom:25px;left:50%;transform:translateX(-50%);width:185px;height:62px;border:0;border-radius:31px;background:#ff572f;color:white;font-size:23px;font-weight:1000;box-shadow:0 7px 0 #a62a12,0 10px 20px #001c35;z-index:10}
+#btn:active{transform:translateX(-50%) translateY(5px);box-shadow:0 2px 0 #a62a12}
+.ripple{position:absolute;border:3px solid #d8fbff;border-radius:50%;width:30px;height:12px;animation:rip .6s forwards;pointer-events:none}
+@keyframes rip{to{transform:scale(5);opacity:0}}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-70%) scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.small{position:absolute;bottom:175px;width:100%;text-align:center;font-size:13px;opacity:.85;z-index:8}
+</style>
+</head>
+<body><div id="game">
+<div class="sun"></div><div class="title">🎣 鯛魚燒大釣場</div>
+<div class="hud"><div class="badge">⏱ <span id="time">30</span>s</div><div class="badge">🔥 <span id="combo">0</span> COMBO</div><div class="badge">⭐ <span id="score">0</span></div></div>
+<div class="waterline"></div><div id="rod"></div><div id="line"></div><div id="hook">🪝</div><div id="msg"></div>
+<div id="powerWrap"><div id="power"></div></div><div class="small">按住蓄力 → 放開甩竿　黃金鯛魚燒只會短暫現身！</div>
+<button id="btn">按住！甩竿</button>
+</div>
+<script>
+const g=document.querySelector('#game'),hook=document.querySelector('#hook'),line=document.querySelector('#line'),btn=document.querySelector('#btn');
+let score=0,combo=0,time=30,charging=false,p=0,dir=1,started=false,ended=false,fish=[],goldTimer=0;
+const S=()=>({w:g.clientWidth,h:g.clientHeight});
+function addFish(gold=false,bomb=false){
+ let e=document.createElement('div'); e.className='fish'+(gold?' gold':'')+(bomb?' bomb':'');
+ e.textContent=bomb?'💣':'🐟'; let s=S(), x=Math.random()*(s.w-60), y=s.h*.38+Math.random()*s.h*.34;
+ e.style.left=x+'px';e.style.top=y+'px';g.appendChild(e);
+ fish.push({e,x,y,v:(1+Math.random()*1.5)*(Math.random()<.5?-1:1),gold,bomb,life:gold?250:9999});
+}
+for(let i=0;i<9;i++)addFish(); addFish(false,true);
+function flash(t){let m=document.querySelector('#msg');m.innerHTML=t;m.style.animation='none';void m.offsetWidth;m.style.animation='pop 1s forwards'}
+function start(){if(started)return;started=true; let tm=setInterval(()=>{if(ended){clearInterval(tm);return} time--;document.querySelector('#time').textContent=time;if(time<=0){ended=true;btn.textContent='再玩一次';flash('時間到！<br>⭐ '+score+' 分');}},1000)}
+function charge(){if(ended){location.reload();return}start();charging=true}
+function release(){
+ if(!charging)return;charging=false;let s=S(), depth=s.h*.34+(p/100)*s.h*.34;
+ hook.style.transition='top .23s cubic-bezier(.2,.8,.2,1)';line.style.transition='height .23s';hook.style.top=depth+'px';line.style.height=(depth-s.h*.24)+'px';
+ setTimeout(()=>catchFish(depth),240); setTimeout(()=>{hook.style.top='58%';line.style.height='36%'},520);
+ p=0;
+}
+function catchFish(depth){
+ let hx=safeNum(getComputedStyle(hook).left)+10, best=null,bd=1e9;
+ fish.forEach(f=>{let d=Math.hypot((f.x+22)-hx,(f.y+20)-depth);if(d<bd){bd=d;best=f}});
+ let r=document.createElement('div');r.className='ripple';r.style.left=(hx-15)+'px';r.style.top=(depth+8)+'px';g.appendChild(r);setTimeout(()=>r.remove(),650);
+ if(best&&bd<72){
+   if(best.bomb){score=Math.max(0,score-80);combo=0;flash('💥 炸彈！ -80');g.style.animation='shake .25s 2';setTimeout(()=>g.style.animation='',550)}
+   else {combo++;let pts=(best.gold?500:50)+Math.min(combo,10)*10;score+=pts;flash(best.gold?'✨ 隱藏黃金鯛魚燒！<br>+'+pts:'🔥 上鉤！ +'+pts)}
+   best.e.remove();fish=fish.filter(x=>x!==best);addFish();
+ }else{combo=0;flash('差一點！')}
+ document.querySelector('#score').textContent=score;document.querySelector('#combo').textContent=combo;
+}
+function safeNum(v){return parseFloat(v)||0}
+btn.addEventListener('pointerdown',e=>{e.preventDefault();charge()}); window.addEventListener('pointerup',release);
+function loop(){
+ if(charging){p+=dir*2.7;if(p>=100){p=100;dir=-1}if(p<=0){p=0;dir=1}document.querySelector('#power').style.width=p+'%'}
+ let s=S();
+ fish.forEach(f=>{f.x+=f.v;f.life--;if(f.x<-55)f.x=s.w;if(f.x>s.w)f.x=-50;f.e.style.left=f.x+'px';f.e.style.transform=f.v>0?'scaleX(-1)':'scaleX(1)'; if(f.gold&&f.life<=0){f.e.remove();fish=fish.filter(x=>x!==f)}});
+ if(started&&!ended){goldTimer++;if(goldTimer>240+Math.random()*300&&!fish.some(f=>f.gold)){addFish(true);goldTimer=0;flash('⚡ 水面閃過金光！')}}
+ requestAnimationFrame(loop)
+} loop();
+</script></body></html>
