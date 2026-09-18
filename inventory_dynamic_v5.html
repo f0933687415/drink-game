@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>七里香大同店｜動態庫存 V5</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#17201b;--muted:#68726c;--line:#e5e0d6;--green:#16794c;--amber:#b7791f;--red:#b83a3a;--blue:#2f6fa5}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC",sans-serif}
+.wrap{max-width:760px;margin:auto;padding:18px 14px 92px}.top{display:flex;justify-content:space-between;align-items:end;margin:5px 2px 16px}.eyebrow{font-size:13px;color:var(--muted);font-weight:700}.top h1{font-size:24px;margin:3px 0 0}.badge{font-size:12px;background:#e7f2eb;color:var(--green);padding:7px 9px;border-radius:999px;font-weight:800}
+.hero,.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:17px;margin-bottom:12px;box-shadow:0 4px 18px rgba(0,0,0,.035)}
+.hero h2{font-size:21px;margin:0 0 7px}.hero p,.note{font-size:13px;color:var(--muted);line-height:1.55;margin:0}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.metric{background:#f7f7f4;border-radius:14px;padding:11px}.metric b{display:block;font-size:19px}.metric span{font-size:11px;color:var(--muted)}
+.tabs{display:flex;gap:8px;overflow:auto;margin:14px 0 12px}.tab{border:1px solid var(--line);background:#fff;padding:9px 13px;border-radius:999px;white-space:nowrap;font-weight:750;color:#536059}.tab.active{background:#1c2922;color:#fff;border-color:#1c2922}
+.sectionTitle{font-size:16px;font-weight:850;margin:18px 3px 9px}.itemHead{display:flex;justify-content:space-between;gap:10px;align-items:start}.name{font-size:18px;font-weight:850}.code{font-size:11px;color:#8a928d;margin-top:3px}.pill{font-size:12px;padding:6px 9px;border-radius:999px;background:#f1f2ef;color:#4d5851;font-weight:750}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:13px 0}.stat{border:1px solid var(--line);border-radius:13px;padding:10px}.stat strong{font-size:17px;display:block}.stat small{font-size:11px;color:var(--muted)}
+.dates{font-size:12px;color:var(--muted);line-height:1.55}.bar{height:7px;background:#ecebe6;border-radius:99px;overflow:hidden;margin-top:9px}.bar i{display:block;height:100%;background:#6b8174;border-radius:99px}
+.row{display:flex;gap:8px}.btn{flex:1;border:0;border-radius:13px;padding:12px;font-weight:850;font-size:14px;background:#1d2a23;color:#fff}.btn.alt{background:#eef0ec;color:#253129}
+.panel{display:none}.panel.active{display:block}
+.countGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:11px 0}.field{background:#f7f7f4;border-radius:14px;padding:11px}.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px}.field input,.field select{width:100%;font-size:17px;border:0;background:transparent;outline:none}
+.percent{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:9px 0 13px}.pct{border:1px solid var(--line);background:#fff;padding:10px 2px;border-radius:11px;font-size:12px;font-weight:800}.pct.on{background:#1d2a23;color:#fff;border-color:#1d2a23}
+.history{font-size:13px;width:100%;border-collapse:collapse}.history td,.history th{padding:10px 5px;border-bottom:1px solid var(--line);text-align:left}.history th{font-size:11px;color:var(--muted)}
+.warning{background:#fff8e8;border:1px solid #f1dfb2;border-radius:14px;padding:11px;font-size:12px;color:#73541b;line-height:1.5}
+.bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:center;padding:8px 10px calc(8px + env(safe-area-inset-bottom))}
+.bottom div{max-width:760px;width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.nav{border:0;background:transparent;padding:8px;font-weight:800;color:#6b756f}.nav.on{color:#152019}
+.toast{position:fixed;left:50%;bottom:82px;transform:translateX(-50%);background:#17201b;color:#fff;padding:10px 14px;border-radius:12px;font-size:13px;display:none;z-index:5}
+@media(max-width:390px){.metrics,.stats{grid-template-columns:1fr 1fr}.percent{grid-template-columns:repeat(3,1fr)}}
+</style></head>
+<body><main class="wrap">
+<div class="top"><div><div class="eyebrow">七里香大同店</div><h1>動態庫存 V5</h1></div><div class="badge">真實貨單測試</div></div>
+
+<section class="hero">
+<h2>先學會你的叫貨節奏</h2>
+<p>已匯入 2026/8/1～8/20 的 6 張實際出貨單。這一版只把貨單當「到貨紀錄」，不把進貨量誤當實際耗用。</p>
+<div class="metrics"><div class="metric"><b id="invoiceN">6</b><span>張貨單</span></div><div class="metric"><b id="itemN">—</b><span>不同品項</span></div><div class="metric"><b>20天</b><span>資料跨度</span></div></div>
+</section>
+
+<div class="tabs"><button class="tab active" data-filter="all">全部</button><button class="tab" data-filter="frequent">高頻補貨</button><button class="tab" data-filter="tea">茶類</button><button class="tab" data-filter="material">耗材/原料</button></div>
+
+<div class="sectionTitle">補貨節奏</div><div id="cards"></div>
+
+<div class="sectionTitle">開始建立「真實庫存」</div>
+<section class="card">
+<div class="warning">目前沒有歷史盤點，所以系統暫時不顯示「還能用幾天」。今天做一次實際盤點後，V5 會把它當作庫存基準點保存於這台裝置。</div>
+<div class="countGrid"><div class="field"><label>品項</label><select id="countItem"></select></div><div class="field"><label>完整包／箱／桶數</label><input id="whole" type="number" min="0" step="1" value="0"></div></div>
+<div class="note">已開封剩餘量</div><div class="percent" id="pctBtns">
+<button class="pct" data-v="1">100%</button><button class="pct" data-v=".75">75%</button><button class="pct on" data-v=".5">50%</button><button class="pct" data-v=".25">25%</button><button class="pct" data-v=".1">快沒了</button>
+</div><button class="btn" id="saveCount">儲存這次盤點</button>
+</section>
+
+<div class="sectionTitle">這台裝置的盤點紀錄</div><section class="card"><table class="history"><thead><tr><th>時間</th><th>品項</th><th>盤點量</th></tr></thead><tbody id="countHistory"></tbody></table><p id="emptyHistory" class="note">還沒有盤點紀錄。</p></section>
+</main>
+<div class="bottom"><div><button class="nav on">狀態</button><button class="nav" onclick="document.querySelector('.sectionTitle:nth-of-type(2)').scrollIntoView({behavior:'smooth'})">盤點</button><button class="nav" onclick="document.querySelector('.history').scrollIntoView({behavior:'smooth'})">紀錄</button></div></div><div class="toast" id="toast"></div>
+
+<script>
+const events=[{"date": "2026-08-01", "items": [["D0014", "700紙杯", 2, "箱"], ["C0017", "仙草凍汁", 2, "單位"], ["C0022", "膠膜", 1, "捲"], ["A0004", "青茶 1斤4包", 5, "斤"], ["B0025", "金鑽鳳梨", 4, "單位"], ["B0002", "七里香奶精", 1, "單位"], ["A0011", "台糖 黑糖3kg", 1, "包"], ["A0003", "綠茶 1斤4包", 10, "斤"]]}, {"date": "2026-08-02", "items": [["D0014", "700紙杯", 2, "箱"], ["C0017", "仙草凍汁", 2, "單位"], ["A0004", "青茶 1斤4包", 5, "斤"], ["A0001", "烏龍綠 1斤4包", 5, "斤"], ["B0025", "金鑽鳳梨", 4, "單位"], ["A0011", "台糖 黑糖3kg", 2, "包"], ["A0019", "玄米玉露", 2, "單位"], ["A0021", "洛神", 10, "單位"], ["C0014", "脆梅汁", 1, "單位"]]}, {"date": "2026-08-03", "items": [["A0003", "綠茶 1斤4包", 10, "斤"], ["A0002", "紅茶 1斤4包", 10, "斤"], ["A0004", "青茶 1斤4包", 10, "斤"], ["D0024", "鮮奶油", 1, "單位"], ["D0014", "700紙杯", 2, "箱"]]}, {"date": "2026-08-10", "items": [["D0014", "700紙杯", 2, "箱"], ["A0003", "綠茶 1斤4包", 10, "斤"], ["A0002", "紅茶 1斤4包", 10, "斤"], ["A0004", "青茶 1斤4包", 10, "斤"], ["A0001", "烏龍綠 1斤4包", 5, "斤"], ["A0008", "黃金烏龍茶 1斤4包", 5, "斤"], ["C0022", "膠膜", 2, "捲"], ["B0002", "七里香奶精", 1, "單位"], ["A0021", "洛神", 10, "單位"]]}, {"date": "2026-08-14", "items": [["A0003", "綠茶 1斤4包", 10, "斤"], ["A0011", "台糖 黑糖3kg", 2, "包"], ["A0019", "玄米玉露", 2, "單位"], ["B0025", "金鑽鳳梨", 4, "單位"], ["C0014", "脆梅汁", 1, "單位"], ["C0017", "仙草凍汁", 2, "單位"], ["D0014", "700紙杯", 2, "箱"]]}, {"date": "2026-08-20", "items": [["A0002", "紅茶 1斤4包", 10, "斤"], ["A0004", "青茶 1斤4包", 5, "斤"], ["A0008", "黃金烏龍茶 1斤4包", 5, "斤"], ["A0011", "台糖 黑糖3kg", 1, "包"], ["C0017", "仙草凍汁", 3, "單位"], ["C0022", "膠膜", 1, "捲"], ["D0014", "700紙杯", 2, "箱"], ["D0024", "鮮奶油", 2, "單位"]]}];
+const flat=[];events.forEach(e=>e.items.forEach(x=>flat.push({date:e.date,code:x[0],name:x[1],qty:x[2],unit:x[3]})));
+const groups={};flat.forEach(x=>{if(!groups[x.code])groups[x.code]={code:x.code,name:x.name,unit:x.unit,rows:[]};groups[x.code].rows.push(x)});
+const items=Object.values(groups).sort((a,b)=>b.rows.length-a.rows.length);
+document.getElementById('itemN').textContent=items.length;
+
+function daysBetween(a,b){return (new Date(b)-new Date(a))/86400000}
+function stats(it){
+ let rows=[...it.rows].sort((a,b)=>a.date.localeCompare(b.date));
+ let gaps=[];for(let i=1;i<rows.length;i++)gaps.push(daysBetween(rows[i-1].date,rows[i].date));
+ return {n:rows.length,total:rows.reduce((s,r)=>s+r.qty,0),avgQty:rows.reduce((s,r)=>s+r.qty,0)/rows.length,avgGap:gaps.length?gaps.reduce((s,v)=>s+v,0)/gaps.length:null,dates:rows.map(r=>r.date.slice(5).replace('-','/'))};
+}
+function kind(it){if(/^A000[1-8]/.test(it.code))return 'tea';return 'material'}
+function render(filter='all'){
+ const root=document.getElementById('cards');root.innerHTML='';
+ items.filter(it=>filter==='all'||(filter==='frequent'&&it.rows.length>=4)||kind(it)===filter).forEach(it=>{
+  const s=stats(it);let level=s.n>=5?'高頻':s.n>=3?'中頻':'資料較少';
+  let pct=Math.min(100,s.n/6*100);
+  root.insertAdjacentHTML('beforeend',`<section class="card">
+   <div class="itemHead"><div><div class="name">${it.name}</div><div class="code">${it.code}</div></div><div class="pill">${level}</div></div>
+   <div class="stats"><div class="stat"><strong>${s.n} 次</strong><small>20 天內到貨</small></div>
+   <div class="stat"><strong>${s.avgGap? s.avgGap.toFixed(1)+' 天':'—'}</strong><small>平均到貨間隔</small></div>
+   <div class="stat"><strong>${s.avgQty.toFixed(1)} ${it.unit}</strong><small>平均每次到貨</small></div></div>
+   <div class="dates">到貨日期：${s.dates.join('、')}<br>本批資料合計：${s.total} ${it.unit}</div>
+   <div class="bar"><i style="width:${pct}%"></i></div>
+  </section>`);
+ });
+}
+render();
+
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');render(b.dataset.filter)});
+const sel=document.getElementById('countItem');items.forEach(it=>sel.insertAdjacentHTML('beforeend',`<option value="${it.code}">${it.name}</option>`));
+let partial=.5;document.querySelectorAll('.pct').forEach(b=>b.onclick=()=>{document.querySelectorAll('.pct').forEach(x=>x.classList.remove('on'));b.classList.add('on');partial=+b.dataset.v});
+function loadCounts(){let arr=JSON.parse(localStorage.getItem('qlx_v5_counts')||'[]'),tb=document.getElementById('countHistory');tb.innerHTML='';document.getElementById('emptyHistory').style.display=arr.length?'none':'block';arr.slice().reverse().forEach(r=>tb.insertAdjacentHTML('beforeend',`<tr><td>${new Date(r.ts).toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})}</td><td>${r.name}</td><td>${r.qty.toFixed(2)} 單位</td></tr>`))}
+document.getElementById('saveCount').onclick=()=>{let it=groups[sel.value],whole=Math.max(0,+document.getElementById('whole').value||0),qty=whole+partial,arr=JSON.parse(localStorage.getItem('qlx_v5_counts')||'[]');arr.push({ts:new Date().toISOString(),code:it.code,name:it.name,qty});localStorage.setItem('qlx_v5_counts',JSON.stringify(arr));loadCounts();let t=document.getElementById('toast');t.textContent=`已儲存：${it.name} ${qty.toFixed(2)} 單位`;t.style.display='block';setTimeout(()=>t.style.display='none',1800)};
+loadCounts();
+</script></body></html>
