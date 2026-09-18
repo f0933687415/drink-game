@@ -1,0 +1,48 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"><title>七里香大同店｜庫存 V6</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f5f1;color:#20231f;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif}.app{max-width:520px;margin:auto;padding:18px 15px 100px}
+.top{display:flex;justify-content:space-between;align-items:end}.top h1{margin:2px 0;font-size:25px}.muted{color:#777;font-size:12px}.weather{font-size:13px;background:#fff;border-radius:14px;padding:9px 11px}
+.alert{margin:15px 0;background:#252b27;color:#fff;border-radius:19px;padding:15px}.alert b{font-size:18px}.alert span{opacity:.7;font-size:12px}
+.cats{display:flex;gap:7px;overflow:auto;padding-bottom:4px}.cat{border:0;background:#e5e7e1;border-radius:20px;padding:9px 14px;white-space:nowrap;font-weight:650}.cat.on{background:#20231f;color:#fff}
+.section{display:flex;justify-content:space-between;align-items:center;margin:18px 2px 8px}.section b{font-size:16px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.item{border:0;text-align:left;background:#fff;border-radius:18px;padding:14px;min-height:125px;box-shadow:0 2px 9px #00000008}.dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}.g{background:#39a65a}.y{background:#e5b72d}.r{background:#e34e45}.b{background:#5198dc}.name{font-size:17px;font-weight:800}.days{font-size:25px;font-weight:850;margin-top:15px}.stock{font-size:12px;color:#737873;margin-top:2px}.hint{font-size:11px;margin-top:8px;color:#777}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#ffffffed;border-top:1px solid #ddd;backdrop-filter:blur(12px)}.nav{max-width:520px;margin:auto;display:flex}.nav button{flex:1;border:0;background:none;padding:12px 3px;font-size:12px}.nav strong{display:block;font-size:20px}
+.modal{display:none;position:fixed;inset:0;background:#0008;z-index:9;align-items:flex-end;justify-content:center}.sheet{background:#fff;width:min(520px,100%);border-radius:25px 25px 0 0;padding:20px;max-height:85vh;overflow:auto}.sheet h2{margin:0 0 3px}.choice{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:15px 0}.choice button{border:1px solid #ddd;background:#f7f7f4;border-radius:14px;padding:15px 4px;font-size:16px;font-weight:750}.choice button.sel{background:#20231f;color:#fff}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.primary,.secondary{border:0;border-radius:14px;padding:14px;font-weight:800}.primary{background:#20231f;color:#fff}.secondary{background:#e9eae6}.quick{display:flex;gap:7px;margin:12px 0}.quick button{flex:1;border:0;border-radius:12px;padding:11px;background:#edf0eb;font-weight:700}.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:10px 15px;border-radius:20px;display:none;z-index:20}
+</style></head><body><div class="app">
+<div class="top"><div><div class="muted">七里香大同店</div><h1>庫存</h1></div><div class="weather">☀️ 31°C<br><span class="muted">夏季需求 +12%</span></div></div>
+<div class="alert"><b>今天只要注意 2 項</b><br><span>🔴 鮮奶建議補貨　・　🟡 1512珍珠接近安全線</span></div>
+<div class="cats" id="cats"></div><div class="section"><b id="title">需要處理</b><span class="muted">直接點商品即可盤點</span></div><div class="grid" id="grid"></div>
+</div>
+<div class="bottom"><div class="nav"><button onclick="setCat('注意')"><strong>●</strong>今天</button><button onclick="receiptPicker()"><strong>＋</strong>收貨</button><button onclick="setCat('全部')"><strong>▦</strong>全部庫存</button></div></div>
+<div class="modal" id="modal"><div class="sheet"><h2 id="mname"></h2><div class="muted" id="mdesc">現在看到多少？直接按。</div><div class="choice" id="choices"></div><div class="actions"><button class="secondary" onclick="closeM()">取消</button><button class="primary" onclick="saveCount()">完成盤點</button></div></div></div>
+<div class="modal" id="receipt"><div class="sheet"><h2>收到新貨</h2><div class="muted">先點商品，再點收到幾個單位</div><div class="quick" id="rItems"></div><h3 id="rName">請選商品</h3><div class="choice" id="rQty"></div><div class="actions"><button class="secondary" onclick="closeR()">取消</button><button class="primary" onclick="saveReceipt()">完成收貨</button></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const defaults=[
+{id:"milk",name:"鮮奶",cat:"乳品",unit:"瓶",stock:7,daily:5.8,status:"r"},
+{id:"pearl",name:"1512 珍珠",cat:"配料",unit:"包",stock:4.3,daily:1.12,status:"y"},
+{id:"cup",name:"700ml 紙杯",cat:"包材",unit:"箱",stock:2.5,daily:.30,status:"g"},
+{id:"sugar",name:"果糖",cat:"配料",unit:"桶",stock:4.75,daily:.20,status:"b"},
+{id:"green",name:"高山青",cat:"茶葉",unit:"包",stock:8,daily:.55,status:"g"},
+{id:"black",name:"古早紅茶",cat:"茶葉",unit:"包",stock:6,daily:.42,status:"g"},
+{id:"winter",name:"仙草凍",cat:"配料",unit:"包",stock:5,daily:.48,status:"g"},
+{id:"lid",name:"杯蓋",cat:"包材",unit:"箱",stock:3,daily:.27,status:"g"}];
+let items=JSON.parse(localStorage.getItem("qlx-v6")||"null")||defaults, cat="注意", current=null,selected=null,rItem=null,rSelected=null;
+const cats=["注意","全部","茶葉","配料","乳品","包材"];
+function status(x){let d=x.stock/x.daily;if(d<=2)x.status="r";else if(d<=5)x.status="y";else if(d>20)x.status="b";else x.status="g";return d}
+function renderCats(){catsEl=document.getElementById("cats");catsEl.innerHTML=cats.map(c=>`<button class="cat ${c==cat?'on':''}" onclick="setCat('${c}')">${c}</button>`).join("")}
+function render(){renderCats();let a=items.filter(x=>cat=="全部"||cat=="注意"?(cat=="全部"||["r","y"].includes(x.status)):x.cat==cat);document.getElementById("title").textContent=cat=="注意"?"需要處理":cat;document.getElementById("grid").innerHTML=a.map(x=>{let d=status(x);let txt=x.status=="r"?"建議補貨":x.status=="y"?"接近安全線":x.status=="b"?"庫存偏多":"正常";return `<button class="item" onclick="openItem('${x.id}')"><div><span class="dot ${x.status}"></span><span class="name">${x.name}</span></div><div class="days">${d.toFixed(1)} 天</div><div class="stock">約 ${x.stock} ${x.unit}・${txt}</div><div class="hint">點一下 → 更新實際庫存</div></button>`}).join("")}
+function setCat(c){cat=c;render()}
+function opts(x){if(x.unit=="箱"||x.unit=="桶")return [0,.25,.5,.75,1,1.5,2,2.5,3,4,5,6];if(x.unit=="瓶")return [0,1,2,3,4,5,6,8,10,12,16,20];return [0,1,2,3,4,5,6,8,10,12,15,20]}
+function openItem(id){current=items.find(x=>x.id==id);selected=current.stock;document.getElementById("mname").textContent=current.name;document.getElementById("mdesc").textContent=`現在看到多少${current.unit}？直接按。`;document.getElementById("choices").innerHTML=opts(current).map(q=>`<button class="${q==selected?'sel':''}" onclick="pick(${q})">${q} ${current.unit}</button>`).join("");document.getElementById("modal").style.display="flex"}
+function pick(q){selected=q;openItem(current.id)}
+function saveCount(){current.stock=selected;persist();closeM();toast("✓ 盤點完成");render()}
+function closeM(){document.getElementById("modal").style.display="none"}
+function receiptPicker(){document.getElementById("rItems").innerHTML=items.slice(0,4).map(x=>`<button onclick="pickRItem('${x.id}')">${x.name}</button>`).join("");document.getElementById("receipt").style.display="flex"}
+function pickRItem(id){rItem=items.find(x=>x.id==id);rSelected=null;document.getElementById("rName").textContent=rItem.name+"・收到幾"+rItem.unit+"？";document.getElementById("rQty").innerHTML=[1,2,3,4,5,6,8,10].map(q=>`<button class="${q==rSelected?'sel':''}" onclick="pickRQ(${q})">${q} ${rItem.unit}</button>`).join("")}
+function pickRQ(q){rSelected=q;pickRItem(rItem.id);rSelected=q;document.querySelectorAll("#rQty button").forEach(b=>{if(b.textContent.startsWith(q+" "))b.classList.add("sel")})}
+function saveReceipt(){if(!rItem||!rSelected)return toast("請先選商品與數量");rItem.stock=+(rItem.stock+rSelected).toFixed(2);persist();closeR();toast("✓ 收貨完成");render()}
+function closeR(){document.getElementById("receipt").style.display="none"}
+function persist(){localStorage.setItem("qlx-v6",JSON.stringify(items))}
+function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",1300)}
+items.forEach(status);render();
+</script></body></html>
