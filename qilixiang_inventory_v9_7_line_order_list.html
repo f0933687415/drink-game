@@ -1,0 +1,346 @@
+<!doctype html><html lang="zh-Hant"><head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>七里香庫存 V9.7・雲端同步版</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f5f1;color:#20231f;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif}.app{max-width:540px;margin:auto;padding:18px 15px 100px}.muted{font-size:12px;color:#747a75}h1{margin:3px 0}.top{display:flex;justify-content:space-between;align-items:end}.weather{background:white;border-radius:13px;padding:8px 10px;font-size:12px}.alert{background:#252d28;color:#fff;border-radius:19px;padding:15px;margin:14px 0}.alert b{font-size:18px}.alert small{opacity:.72}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}.quick button{border:0;border-radius:17px;background:#fff;padding:15px;text-align:left;font:inherit}.quick .camera{grid-column:1/-1;background:#fff0bd}.quick strong{display:block;font-size:16px;margin-top:4px}
+.cats{display:flex;gap:7px;overflow:auto}.cat{border:0;background:#e5e7e1;border-radius:18px;padding:9px 13px;white-space:nowrap;font-weight:700}.cat.on{background:#222;color:#fff}
+.head{display:flex;justify-content:space-between;margin:17px 2px 8px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.item{border:0;background:white;border-radius:18px;padding:14px;text-align:left;min-height:126px}.dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:5px}.r{background:#e34e45}.y{background:#e5b72d}.g{background:#39a65a}.b{background:#5198dc}.n{background:#b9bdb8}.name{font-size:16px;font-weight:800}.days{font-size:25px;font-weight:850;margin-top:14px}.stock{font-size:12px;color:#747a75}.hint{font-size:11px;color:#888;margin-top:8px}
+.overlay{display:none;position:fixed;inset:0;background:#0009;z-index:20;align-items:flex-end;justify-content:center}.sheet{background:white;width:min(540px,100%);max-height:94vh;overflow:auto;border-radius:25px 25px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom))}.sheet h2{margin:0 0 4px}.choice{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}.choice button{border:1px solid #ddd;background:#f7f7f4;border-radius:13px;padding:14px 3px;font-weight:750}.choice .sel{background:#222;color:white}#receiptQty{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}#receiptQty>button{width:100%;min-width:0;padding:13px 2px;text-align:center}#receiptQty .manual-receipt{grid-column:1/-1;width:100%;margin-top:4px;padding-top:12px;border-top:1px solid #e5e7eb}#receiptQty .manual-row{display:flex;gap:8px;align-items:center}#receiptQty .manual-row input{flex:1;min-width:0;padding:12px;border:1px solid #d1d5db;border-radius:12px;font-size:16px}.manual-count{margin:12px 0;padding:12px;background:#f5f6f3;border-radius:14px}.manual-count .row{display:flex;gap:8px;align-items:center;margin-top:7px}.manual-count input{flex:1;min-width:0;padding:13px;border:1px solid #d1d5db;border-radius:12px;font-size:17px}.learnbox{font-size:12px;background:#eef4ee;border-radius:12px;padding:10px;margin:10px 0;color:#405046}.btn{width:100%;border:0;border-radius:13px;padding:14px;margin-top:8px;background:#222;color:white;font-size:15px;font-weight:800}.light{background:#e9ebe7;color:#222}.green{background:#176d3b}.preview{min-height:190px;border:2px dashed #ccd0ca;border-radius:16px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin:12px 0;text-align:center}.preview img{width:100%;max-height:320px;object-fit:contain}.hide{display:none!important}.note{background:#fff2c8;border-radius:11px;padding:10px;font-size:12px;margin:10px 0}.ocrline{display:grid;grid-template-columns:1.45fr .5fr .45fr;gap:6px;margin:7px 0}.ocrline input{width:100%;padding:9px;border:1px solid #ddd;border-radius:9px}.badge{font-size:11px;padding:9px 2px;text-align:center;background:#e3f3e6;border-radius:9px}.warn{background:#fff0c4}.history{font-size:12px;background:#f5f6f3;border-radius:12px;padding:9px;margin-top:9px}
+</style></head><body><div class="app">
+<div class="top"><div><div class="muted">七里香大同店</div><h1>庫存 V9.7</h1><div style="font-size:11px;font-weight:900;color:#167a3f;margin-top:-6px">安全庫存版</div></div><div class="weather">47 項主檔<br><span class="muted">實盤／預估分離</span></div></div>
+<div id="cloudBar" style="display:flex;align-items:center;gap:8px;background:#fff;border-radius:13px;padding:9px 11px;margin:10px 0;font-size:12px"><span id="cloudDot" style="width:9px;height:9px;border-radius:50%;background:#d1d5db;display:inline-block"></span><b id="cloudStatus">雲端連線中…</b><span id="cloudTime" class="muted" style="margin-left:auto"></span></div>
+<div class="alert"><b id="alertTitle">今天需要注意</b><br><small id="alertText"></small></div>
+<div class="quick"><button id="receiptOpen">＋ <strong>手動收貨</strong><span class="muted">直接增加庫存</span></button><button id="orderOpen">📦 <strong>叫貨清單</strong><span class="muted">整理後傳到 LINE</span></button><button onclick="setCat('全部')">✓ <strong>庫存總覽</strong><span class="muted">查看實盤／預估</span></button><button id="dataOpen">🛟 <strong>資料管理</strong><span class="muted">備份 / 還原</span></button><button id="safetyOpen">🛡️ <strong>安全庫存</strong><span class="muted">設定提醒底線</span></button></div>
+<div class="cats" id="cats"></div><div class="head"><b id="sectionTitle"></b><span class="muted" id="sectionHint">點商品即可盤點</span></div><div class="grid" id="grid"></div>
+<div class="history"><b>最近操作</b><div id="history"></div></div></div>
+
+<div class="overlay" id="countModal"><div class="sheet"><h2 id="countName"></h2><div class="muted" id="countDesc"></div><div id="countLearn" class="learnbox"></div><div class="choice" id="countChoices"></div><div id="manualCount" class="manual-count"><div class="muted">或直接輸入實際庫存</div><div class="row"><input id="manualCountQty" type="number" min="0" step="0.01" inputmode="decimal" placeholder="輸入數量"><span id="manualCountUnit"></span></div></div><div id="winterCount" class="hide" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0"><label>整箱<input id="winterBoxes" type="number" min="0" step="1" inputmode="numeric" style="width:100%;padding:13px;border:1px solid #ddd;border-radius:12px;margin-top:5px"></label><label>散裝小塊<input id="winterPieces" type="number" min="0" max="29" step="1" inputmode="numeric" style="width:100%;padding:13px;border:1px solid #ddd;border-radius:12px;margin-top:5px"></label></div><button class="btn green" id="countSave">完成盤點</button><button class="btn light" onclick="closeOverlay('countModal')">取消</button></div></div>
+
+<div class="overlay" id="receiptModal"><div class="sheet"><h2>＋ 手動收貨</h2><div class="muted">先選分類 → 選品項 → 選收到數量 → 入庫</div><div class="cats" id="receiptCats" style="margin:14px 0 8px"></div><div class="choice" id="receiptItems"></div><h3 id="receiptName">請先選品項</h3><div class="choice" id="receiptQty"></div><button class="btn green" id="receiptSave">完成收貨</button><button class="btn light" onclick="closeOverlay('receiptModal')">取消</button></div></div>
+
+<div class="overlay" id="cameraModal"><div class="sheet"><h2>📷 拍出貨單</h2><div class="muted">照片一定先確認，確認後才辨識。</div><div class="preview" id="preview">🧾 尚未選照片</div><input id="photoInput" type="file" accept="image/*" hidden>
+<button class="btn" id="choosePhoto">拍照 / 選照片</button>
+<div id="photoConfirm" class="hide"><button class="btn green" id="confirmPhoto">✓ 確認使用這張照片</button><button class="btn light" id="changePhoto">重新拍 / 重選</button></div>
+<div id="recognizeArea" class="hide"><div class="note">✓ 照片已確認</div><button class="btn" id="recognizeBtn">開始辨識單據</button></div>
+<div id="ocrResult" class="hide"><h3>辨識結果</h3><div class="note">目前尚未接影像辨識後端。此處使用「可修改示範結果」驗證入庫流程，不會假裝已讀懂照片。</div><label class="muted">出貨日期</label><input id="ocrDate" value="2026/09/18" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:9px;margin:4px 0 8px"><div id="ocrLines"></div><button class="btn green" id="ocrSave">確認資料並入庫</button></div>
+<button class="btn light" onclick="closeOverlay('cameraModal')">關閉</button></div></div>
+
+<div class="overlay" id="orderModal"><div class="sheet"><h2>📦 叫貨清單</h2><div class="muted">系統先列出需要注意的品項；叫貨數量由你輸入。也可自行加入其他品項。傳送叫貨不會增加庫存。</div><div id="orderCandidates" style="margin-top:12px"></div><div style="margin-top:14px"><b>＋ 加入其他品項</b><select id="orderAddItem" style="width:100%;padding:11px;margin-top:7px;border:1px solid #ddd;border-radius:10px;font-size:16px"></select><button class="btn light" id="orderAddBtn">加入清單</button></div><div class="learnbox" style="margin-top:14px"><b>LINE 預覽</b><div id="orderPreview" style="white-space:pre-wrap;margin-top:7px"></div></div><button class="btn green" id="orderLineBtn">傳到 LINE</button><button class="btn light" id="orderCopyBtn">複製叫貨文字</button><button class="btn light" id="orderClose">關閉</button></div></div>
+<div class="overlay" id="safetyModal"><div class="sheet"><h2>🛡️ 安全庫存設定</h2><div class="muted">每個品項設定一次提醒底線。資料還在學習時，先依這個底線判斷庫存安全程度。</div><div id="safetyList" style="margin-top:12px"></div><button class="btn light" id="safetyClose">完成</button></div></div>
+<div class="overlay" id="dataModal"><div class="sheet"><h2>🛟 資料管理</h2><div class="muted">庫存事件以 Supabase 雲端為共同來源；本機與 JSON 備份保留作為備援。</div><div class="learnbox" id="dataSummary"></div><div class="learnbox"><b>☁️ 雲端同步</b><div class="muted" style="margin-top:5px">第一次使用可把這個瀏覽器原本的盤點／收貨紀錄上傳到雲端。</div><button class="btn" id="uploadLocalBtn">將本機既有紀錄上傳雲端</button><button class="btn light" id="refreshCloudBtn">重新讀取雲端資料</button></div><button class="btn green" id="backupBtn">⬇️ 匯出完整備份</button><button class="btn" id="restoreBtn">⬆️ 從備份檔還原</button><input id="restoreInput" type="file" accept="application/json,.json" hidden><div class="note">備份包含：47項目前庫存、盤點/收貨事件、耗用學習資料與操作紀錄。還原前會先自動保存目前資料的救援副本。</div><button class="btn light" onclick="closeOverlay('dataModal')">關閉</button></div></div>
+
+<script>
+(function(){
+const E=id=>document.getElementById(id), KEY="qlx-v9-46-master", OLDKEY="qlx-v8-stable", SCHEMA_VERSION=2;
+const defaults=[
+{id:"green_jasmine",name:"茉香綠",cat:"茶葉茶料",unit:"包",packPerJin:4,stock:0,daily:0},
+{id:"old_black",name:"古早紅",cat:"茶葉茶料",unit:"包",packPerJin:4,stock:0,daily:0},
+{id:"high_mountain",name:"高山青",cat:"茶葉茶料",unit:"包",packPerJin:4,stock:0,daily:0},
+{id:"oolong_green",name:"烏龍綠",cat:"茶葉茶料",unit:"包",packPerJin:4,stock:0,daily:0},
+{id:"golden_oolong",name:"黃金烏龍茶",cat:"茶葉茶料",unit:"包",packPerJin:4,stock:0,daily:0},
+{id:"osmanthus",name:"桂花青茶",cat:"茶葉茶料",unit:"斤",stock:0,daily:0},
+{id:"ruby_black",name:"紅玉紅茶",cat:"茶葉茶料",unit:"包",packPerJin:4,stock:0,daily:0},
+{id:"genmai_gyokuro",name:"玄米玉露",cat:"茶葉茶料",unit:"包",stock:0,daily:0},
+{id:"genmai_grain",name:"玄米粒",cat:"茶葉茶料",unit:"斤",stock:0,daily:0},
+{id:"buckwheat",name:"蕎麥",cat:"茶葉茶料",unit:"包",stock:0,daily:0},
+{id:"barley",name:"決明大麥",cat:"茶葉茶料",unit:"斤",stock:0,daily:0},
+{id:"creamer",name:"奶精",cat:"奶粉類",unit:"袋",stock:0,daily:0},
+{id:"milk",name:"鮮奶",cat:"奶粉類",unit:"罐",stock:0,daily:0},
+{id:"cream",name:"鮮奶油",cat:"奶粉類",unit:"罐",stock:0,daily:0},
+{id:"fructose",name:"果糖",cat:"糖調味",unit:"桶",stock:0,daily:0},
+{id:"brown_sugar",name:"黑糖",cat:"糖調味",unit:"罐",stock:0,daily:0,note:"每罐3公斤"},
+{id:"honey",name:"蜂蜜",cat:"糖調味",unit:"罐",stock:0,daily:0},
+{id:"wintermelon",name:"冬瓜",cat:"糖調味",unit:"箱",stock:0,daily:0,note:"1箱=30小塊",piecesPerUnit:30},
+{id:"pineapple",name:"金鑽鳳梨",cat:"飲料原料",unit:"包",stock:0,daily:0},
+{id:"roselle",name:"洛神",cat:"飲料原料",unit:"包",stock:0,daily:0},
+{id:"plum_juice",name:"脆梅汁",cat:"飲料原料",unit:"罐",stock:0,daily:0},
+{id:"ganmei",name:"甘梅",cat:"飲料原料",unit:"袋",stock:0,daily:0},
+{id:"grass_jelly_juice",name:"仙草汁",cat:"飲料原料",unit:"罐",stock:0,daily:0},
+{id:"grass_tea",name:"仙草甘茶",cat:"飲料原料",unit:"瓶",stock:0,daily:0},
+{id:"kanten",name:"寒天",cat:"配料",unit:"包",stock:0,daily:0},
+{id:"coffee_jelly",name:"咖啡凍",cat:"配料",unit:"桶",stock:0,daily:0},
+{id:"coconut_jelly",name:"椰果",cat:"配料",unit:"桶",stock:0,daily:0},
+{id:"black_pearl",name:"黑珍珠",cat:"配料",unit:"包",stock:0,daily:0},
+{id:"white_pearl",name:"白珍珠",cat:"配料",unit:"包",stock:0,daily:0},
+{id:"cocoa",name:"可可粉",cat:"奶粉類",unit:"包",stock:0,daily:0},
+{id:"ovaltine",name:"阿華田",cat:"奶粉類",unit:"罐",stock:0,daily:0},
+{id:"coffee",name:"咖啡粉",cat:"奶粉類",unit:"包",stock:0,daily:0},
+{id:"passion",name:"百香果汁",cat:"飲料原料",unit:"罐",stock:0,daily:0},
+{id:"mixed_juice",name:"綜合汁",cat:"飲料原料",unit:"罐",stock:0,daily:0},
+{id:"cup700",name:"700ml 紙杯",cat:"包材",unit:"箱",stock:0,daily:0},
+{id:"film",name:"膠膜",cat:"包材",unit:"捲",stock:0,daily:0},
+{id:"cassia",name:"決明子",cat:"茶葉茶料",unit:"斤",stock:0,daily:0},
+{id:"plum_piece",name:"脆梅粒",cat:"配料",unit:"袋",stock:0,daily:0},
+{id:"condensed_milk",name:"煉乳",cat:"奶粉類",unit:"罐",stock:0,daily:0},
+{id:"straw_thick",name:"粗吸管",cat:"包材",unit:"袋",stock:0,daily:0,note:"1袋=5包"},
+{id:"straw_thin",name:"細吸管",cat:"包材",unit:"袋",stock:0,daily:0,note:"1袋=5包"},
+{id:"bag2",name:"2杯袋",cat:"包材",unit:"袋",stock:0,daily:0},
+{id:"bag6",name:"6杯袋",cat:"包材",unit:"袋",stock:0,daily:0},
+{id:"bag4",name:"4杯袋",cat:"包材",unit:"袋",stock:0,daily:0},
+{id:"bag1",name:"1杯袋",cat:"包材",unit:"袋",stock:0,daily:0},
+{id:"choc_syrup",name:"巧克力漿",cat:"糖調味",unit:"罐",stock:0,daily:0},
+{id:"mint",name:"薄荷汁",cat:"糖調味",unit:"罐",stock:0,daily:0}
+];
+const teaPackIds=new Set(["green_jasmine","old_black","high_mountain","oolong_green","golden_oolong","ruby_black"]);
+function migrateTeaUnits(st){
+ if(!st||!Array.isArray(st.items)||Number(st.schemaVersion||1)>=2)return st;
+ st.items.forEach(x=>{if(teaPackIds.has(x.id)){x.stock=+(Number(x.stock||0)*4).toFixed(4);x.daily=+(Number(x.daily||0)*4).toFixed(4);x.unit="包";x.packPerJin=4}});
+ if(Array.isArray(st.inventoryEvents))st.inventoryEvents.forEach(e=>{if(teaPackIds.has(e.itemId)&&e.unit!=="包"){e.qty=+(Number(e.qty||0)*4).toFixed(4);e.unit="包";e.migratedFrom="斤"}});
+ if(st.usageSamples&&typeof st.usageSamples==="object")teaPackIds.forEach(id=>{(st.usageSamples[id]||[]).forEach(z=>{z.used=+(Number(z.used||0)*4).toFixed(4);z.rate=+(Number(z.rate||0)*4).toFixed(4)})});
+ st.schemaVersion=2;return st;
+}
+
+const SUPABASE_URL="https://sohrrsyfejjoqbzgqneo.supabase.co";
+const SUPABASE_KEY="sb_publishable_pFTb1FzFgGXBBgRTliwlDg_kCR6S71V";
+const CLOUD_HEADERS={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};
+let cloudItemByLocalId=new Map(), cloudLocalIdByCloudId=new Map(), cloudReady=false, cloudBusy=false;
+
+const CLOUD_NAME_TO_LOCAL={
+"茉香綠":"green_jasmine","古早紅":"old_black","高山青":"high_mountain","烏龍綠":"oolong_green",
+"黃金烏龍茶":"golden_oolong","桂花青茶":"osmanthus","紅玉紅茶":"ruby_black","玄米玉露":"genmai_gyokuro",
+"玄米粒":"genmai_grain","蕎麥":"buckwheat","決明大麥":"barley","決明子":"cassia","奶精":"creamer","鮮奶":"milk",
+"鮮奶油":"cream","煉乳":"condensed_milk","可可粉":"cocoa","阿華田":"ovaltine","咖啡粉":"coffee","果糖":"fructose",
+"黑糖":"brown_sugar","蜂蜜":"honey","巧克力漿":"choc_syrup","薄荷汁":"mint","冬瓜":"wintermelon","金鑽鳳梨":"pineapple",
+"洛神":"roselle","脆梅汁":"plum_juice","脆梅粒":"plum_piece","甘梅":"ganmei","仙草汁":"grass_jelly_juice",
+"仙草甘茶":"grass_tea","百香果汁":"passion","綜合汁":"mixed_juice","寒天":"kanten","咖啡凍":"coffee_jelly",
+"椰果":"coconut_jelly","黑珍珠":"black_pearl","白珍珠":"white_pearl","700ml 紙杯":"cup700","膠膜":"film",
+"粗吸管":"straw_thick","細吸管":"straw_thin","1杯袋":"bag1","2杯袋":"bag2","4杯袋":"bag4","6杯袋":"bag6"
+};
+
+function cloudStatus(ok,msg){
+ const d=E("cloudDot"),t=E("cloudStatus"),tm=E("cloudTime"); if(!d||!t)return;
+ d.style.background=ok===true?"#22a85a":ok===false?"#d64545":"#d7a514"; t.textContent=msg;
+ if(tm&&ok===true)tm.textContent=new Date().toLocaleTimeString("zh-TW",{hour:"2-digit",minute:"2-digit",hour12:false});
+}
+async function cloudFetch(path,opt={}){
+ const r=await fetch(SUPABASE_URL+"/rest/v1/"+path,{...opt,headers:{...CLOUD_HEADERS,...(opt.headers||{})}});
+ if(!r.ok)throw new Error((await r.text())||("HTTP "+r.status));
+ const txt=await r.text(); return txt?JSON.parse(txt):null;
+}
+async function loadCloudMaster(){
+ const rows=await cloudFetch("inventory_items?select=id,name,unit&active=eq.true&order=sort_order.asc");
+ cloudItemByLocalId.clear();cloudLocalIdByCloudId.clear();
+ rows.forEach(r=>{const lid=CLOUD_NAME_TO_LOCAL[r.name];if(lid){cloudItemByLocalId.set(lid,r);cloudLocalIdByCloudId.set(r.id,lid)}});
+ if(cloudItemByLocalId.size!==47)throw new Error("雲端主檔對應不完整："+cloudItemByLocalId.size+"/47");
+}
+function rebuildFromCloudEvents(rows){
+ state.inventoryEvents=[];
+ state.items.forEach(x=>{x.stock=0;x.daily=0;x.initialized=false});
+ rows.sort((a,b)=>new Date(a.occurred_at)-new Date(b.occurred_at)).forEach(r=>{
+   const lid=cloudLocalIdByCloudId.get(r.item_id); if(!lid||r.is_void)return;
+   const x=state.items.find(z=>z.id===lid); if(!x)return;
+   const ev={type:r.event_type,itemId:lid,itemName:x.name,qty:Number(r.quantity),unit:r.unit,ts:new Date(r.occurred_at).getTime(),eventUuid:r.event_uuid,source:r.source||"cloud"};
+   state.inventoryEvents.push(ev);
+   if(ev.type==="count"){x.stock=ev.qty;x.initialized=true}
+   else if(ev.type==="receipt"){x.stock=+(Number(x.stock||0)+ev.qty).toFixed(4)}
+ });
+ state.usageSamples={};
+ state.items.forEach(item=>{
+   const counts=state.inventoryEvents.filter(e=>e.type==="count"&&e.itemId===item.id).sort((a,b)=>a.ts-b.ts);
+   for(let i=1;i<counts.length;i++){
+     const a=counts[i-1],b=counts[i],daysGap=(b.ts-a.ts)/86400000;if(daysGap<0.5)continue;
+     const receipts=state.inventoryEvents.filter(e=>e.type==="receipt"&&e.itemId===item.id&&e.ts>a.ts&&e.ts<=b.ts).reduce((n,e)=>n+Number(e.qty||0),0);
+     const used=Number(a.qty)+receipts-Number(b.qty);if(used<0)continue;
+     (state.usageSamples[item.id]||(state.usageSamples[item.id]=[])).push({ts:b.ts,days:daysGap,used,rate:used/daysGap});
+   }
+   const sm=(state.usageSamples[item.id]||[]).slice(-8);state.usageSamples[item.id]=sm;
+   const td=sm.reduce((a,z)=>a+z.days,0),tu=sm.reduce((a,z)=>a+z.used,0);item.daily=td>0?tu/td:0;
+ });
+ save();
+}
+async function refreshCloud(silent=false){
+ if(cloudBusy)return;cloudBusy=true;if(!silent)cloudStatus(null,"雲端同步中…");
+ try{
+   await loadCloudMaster();
+   const rows=await cloudFetch("inventory_events?select=id,event_uuid,item_id,event_type,quantity,unit,occurred_at,source,is_void&is_void=eq.false&order=occurred_at.asc");
+   if(rows.length)rebuildFromCloudEvents(rows);
+   cloudReady=true;cloudStatus(true,rows.length?"雲端已同步":"雲端已連線・尚無庫存事件");render();
+ }catch(err){cloudReady=false;cloudStatus(false,"雲端連線失敗");if(!silent)alert("雲端同步失敗："+err.message)}
+ finally{cloudBusy=false}
+}
+async function pushCloudEvent(type,item,qty,extra={}){
+ if(!cloudReady)throw new Error("目前尚未連上雲端");
+ const ci=cloudItemByLocalId.get(item.id);if(!ci)throw new Error("找不到雲端商品："+item.name);
+ const body={item_id:ci.id,event_type:type,quantity:Number(qty),unit:item.unit,occurred_at:new Date().toISOString(),source:extra.source||"web"};
+ await cloudFetch("inventory_events",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify(body)});
+}
+
+let state;try{state=migrateTeaUnits(JSON.parse(localStorage.getItem(KEY)))}catch(e){}
+if(!state){
+  let old=null;try{old=JSON.parse(localStorage.getItem(OLDKEY))}catch(e){}
+  state={items:defaults.map(x=>({...x})),events:(old&&old.events)||[]};
+  if(old&&old.items){const alias={"高山青":"高山青","古早紅茶":"古早紅","700ml 紙杯":"700ml 紙杯","果糖":"果糖","鮮奶":"鮮奶"};old.items.forEach(o=>{let n=alias[o.name];let x=state.items.find(z=>z.name===n);if(x&&Number.isFinite(Number(o.stock)))x.stock=Number(o.stock)});}
+  localStorage.setItem(KEY,JSON.stringify(state));
+}else{
+  const byName=new Map(state.items.map(x=>[x.name,x]));
+  state.items=defaults.map(d=>byName.has(d.name)?{...d,...byName.get(d.name),cat:d.cat,unit:d.unit}:{...d});save();
+}
+if(!Array.isArray(state.inventoryEvents))state.inventoryEvents=[];
+if(!state.usageSamples||typeof state.usageSamples!=="object")state.usageSamples={};
+if(!Array.isArray(state.events))state.events=[];
+state.schemaVersion=SCHEMA_VERSION;
+state.appVersion="9.6";
+save();
+let cat="全部",current=null,selected=null,rItem=null,rQty=null,rCat="茶葉茶料",objUrl="";
+function isEstablished(x){return !!x.initialized || state.inventoryEvents.some(e=>e.type==="count"&&e.itemId===x.id) || state.events.some(e=>e.text&&e.text.startsWith(`盤點 ${x.name}`))}
+function lastCountEvent(id){return state.inventoryEvents.filter(e=>e.type==="count"&&e.itemId===id).sort((a,b)=>b.ts-a.ts)[0]||null}
+function fmtQty(x,q){if(x.id==="wintermelon"){let total=Math.max(0,Math.round(q*30)),b=Math.floor(total/30),p=total%30;return `${b}箱${p}塊`}return `${Number(q.toFixed? q.toFixed(2):q).toString()} ${x.unit}`}
+function currentStockFromEvents(x){let last=lastCountEvent(x.id);if(!last)return null;let received=state.inventoryEvents.filter(e=>e.type==="receipt"&&e.itemId===x.id&&e.ts>last.ts).reduce((a,e)=>a+Number(e.qty||0),0);return Number(last.qty)+received}
+function estimateNow(x){let last=lastCountEvent(x.id);if(!last||!(x.daily>0))return null;let now=Date.now(),received=state.inventoryEvents.filter(e=>e.type==="receipt"&&e.itemId===x.id&&e.ts>last.ts&&e.ts<=now).reduce((a,e)=>a+Number(e.qty||0),0),elapsed=Math.max(0,(now-last.ts)/86400000);return Math.max(0,Number(last.qty)+received-x.daily*elapsed)}
+function displayQty(x){let e=estimateNow(x);return e===null?x.stock:e}
+function days(x){return x.daily>0?displayQty(x)/x.daily:null}
+function status(x){if(!isEstablished(x))return "n";let d=days(x);if(d===null)return "g";return d<=2?"r":d<=5?"y":d>20?"b":"g"}
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function log(t){state.events.unshift({time:new Date().toLocaleString("zh-TW",{hour12:false}),text:t});state.events=state.events.slice(0,8);save()}
+window.closeOverlay=id=>E(id).style.display="none";window.setCat=c=>{cat=c;render()}
+
+const SAFETY_KEY="qlx-v9-safety-levels";
+let safetyLevels={};try{safetyLevels=JSON.parse(localStorage.getItem(SAFETY_KEY)||"{}")||{}}catch(e){}
+function saveSafety(){localStorage.setItem(SAFETY_KEY,JSON.stringify(safetyLevels))}
+function safetyState(x){
+ if(safetyLevels[x.id]===undefined||!isEstablished(x)||x.daily>0)return null;
+ const v=Number(safetyLevels[x.id]),cur=currentStockFromEvents(x);if(!(v>=0)||cur===null)return null;
+ if(cur<=v)return "r"; if(v>0&&cur<=v*1.5)return "y"; return "g";
+}
+function safetyLabel(x){
+ if(safetyLevels[x.id]===undefined||!isEstablished(x))return "";
+ if(x.daily>0)return `安全庫存底線 ${safetyLevels[x.id]}${x.unit}`;
+ const st=safetyState(x);return st==="r"?"低於安全庫存":st==="y"?"接近安全庫存":st==="g"?"安全":"";
+}
+function renderSafety(){
+ const box=E("safetyList");if(!box)return;
+ box.innerHTML=state.items.map(x=>`<div style="display:grid;grid-template-columns:1fr 110px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #eee"><div><b>${x.name}</b><div class="muted">提醒底線（${x.unit}）</div></div><input inputmode="decimal" type="number" min="0" step="0.25" data-safety="${x.id}" value="${safetyLevels[x.id]??""}" placeholder="未設定" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;font-size:16px"></div>`).join("");
+ box.querySelectorAll("[data-safety]").forEach(inp=>inp.onchange=()=>{const v=inp.value.trim();if(v==="")delete safetyLevels[inp.dataset.safety];else safetyLevels[inp.dataset.safety]=Math.max(0,Number(v)||0);saveSafety();render()});
+}
+
+
+let orderIds=[];
+function orderEffectiveStatus(x){return x.daily>0?status(x):(safetyState(x)||status(x))}
+function suggestedOrderItems(){return state.items.filter(x=>["r","y"].includes(orderEffectiveStatus(x)))}
+function removeOrderId(id){orderIds=orderIds.filter(v=>v!==id);renderOrderList()}
+function orderText(){const lines=[];orderIds.forEach(id=>{const x=state.items.find(v=>v.id===id);const inp=document.querySelector(`[data-order-qty="${id}"]`);const q=inp?inp.value.trim():"";if(x&&q)lines.push(`${x.name} ${q}${x.unit}`)});return lines.length?`七里香大同店叫貨\n\n${lines.join("\n")}`:""}
+function updateOrderPreview(){E("orderPreview").textContent=orderText()||"輸入數量後會在這裡產生叫貨內容"}
+function renderOrderList(){
+ const box=E("orderCandidates");
+ box.innerHTML=orderIds.length?orderIds.map(id=>{const x=state.items.find(v=>v.id===id);if(!x)return "";const cur=currentStockFromEvents(x),d=days(x);const reason=x.daily>0&&d!==null?`約剩 ${d.toFixed(1)} 天`:(safetyLevels[x.id]!==undefined?`安全底線 ${safetyLevels[x.id]}${x.unit}`:"手動加入");return `<div style="display:grid;grid-template-columns:1fr 92px 38px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #eee"><div><b>${x.name}</b><div class="muted">目前 ${cur===null?"—":fmtQty(x,cur)}・${reason}</div></div><input data-order-qty="${x.id}" inputmode="decimal" type="number" min="0" step="0.25" placeholder="數量" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;font-size:16px"><button type="button" data-order-remove="${x.id}" style="border:0;background:transparent;font-size:22px">×</button></div>`}).join(""):'<div class="learnbox">目前沒有已加入的叫貨品項。</div>';
+ box.querySelectorAll("[data-order-qty]").forEach(i=>i.oninput=updateOrderPreview);box.querySelectorAll("[data-order-remove]").forEach(b=>b.onclick=()=>removeOrderId(b.dataset.orderRemove));
+ E("orderAddItem").innerHTML='<option value="">選擇品項…</option>'+state.items.filter(x=>!orderIds.includes(x.id)).map(x=>`<option value="${x.id}">${x.name}</option>`).join("");updateOrderPreview()
+}
+function openOrderList(){orderIds=suggestedOrderItems().map(x=>x.id);renderOrderList();E("orderModal").style.display="flex"}
+
+function render(){
+ let cs=["注意","全部","茶葉茶料","奶粉類","糖調味","飲料原料","配料","包材"];E("cats").innerHTML=cs.map(c=>`<button class="cat ${c==cat?"on":""}" onclick="setCat('${c}')">${c}</button>`).join("");
+ let arr=state.items.filter(x=>cat=="全部"||cat=="注意"?(cat=="全部"||["r","y"].includes(status(x))):x.cat==cat);
+ E("sectionTitle").textContent=cat=="注意"?"需要處理":cat=="全部"?"實際庫存總覽":cat; E("sectionHint").textContent=cat=="全部"?"上次實盤＋收貨後目前庫存":"點商品即可盤點";
+ E("grid").innerHTML=arr.map(x=>{let s=status(x),est=isEstablished(x),last=lastCountEvent(x.id),pred=estimateNow(x),txt=s=="r"?"建議補貨":s=="y"?"接近安全線":s=="b"?"庫存偏多":s=="n"?"待首次盤點":"正常";let lastText=last?`上次實盤：${fmtQty(x,Number(last.qty))}｜${new Date(last.ts).toLocaleString("zh-TW",{hour12:false})}`:"尚未首次盤點";let current=currentStockFromEvents(x),nowText=!est?"目前庫存：待建立":current===null?"目前庫存：待建立":`目前庫存：${fmtQty(x,current)}`;let learnText=pred===null?"耗用資料建立中":`耗用後預估：約 ${fmtQty(x,pred)}・${txt}`;return `<button class="item" data-id="${x.id}"><div><span class="dot ${s}"></span><span class="name">${x.name}</span></div><div class="days">${!est?"待建立":days(x)===null?"學習中":days(x).toFixed(1)+" 天"}</div><div class="stock">${lastText}</div><div class="stock" style="margin-top:5px;padding:7px 9px;background:#eef8f1;border-radius:9px"><b style="color:#167a3f">${nowText}</b>${x.note&&x.id!=="wintermelon"?"（"+x.note+"）":""}<br><span>${!est?"尚未首次盤點":learnText}</span>${safetyLabel(x)?`<br><b>${safetyLabel(x)}</b>`:""}</div><div class="hint">點一下 → 更新實際庫存</div></button>`}).join("");
+ E("grid").querySelectorAll(".item").forEach(b=>b.onclick=()=>openCount(b.dataset.id));
+ let effectiveStatus=x=>(x.daily>0?status(x):(safetyState(x)||status(x))),warns=state.items.filter(x=>["r","y"].includes(effectiveStatus(x))), pending=state.items.filter(x=>!isEstablished(x));
+ if(warns.length){E("alertTitle").textContent=`今天需要注意 ${warns.length} 項`;E("alertText").textContent=warns.map(x=>(effectiveStatus(x)=="r"?"🔴 ":"🟡 ")+x.name).join("　")+(pending.length?`　｜另有 ${pending.length} 項待首次盤點`:"")}else if(pending.length){E("alertTitle").textContent=`尚有 ${pending.length} 項待首次盤點`;E("alertText").textContent="完成盤點後開始建立庫存基準"}else{E("alertTitle").textContent="今天庫存正常";E("alertText").textContent="目前沒有需要處理的品項"};
+ E("history").innerHTML=state.events.length?state.events.map(e=>`<div>${e.time}　${e.text}</div>`).join(""):"尚無操作紀錄";
+}
+function options(x){
+ const integer=(max)=>Array.from({length:max+1},(_,i)=>i);
+ if(teaPackIds.has(x.id))return [0,1,2,3,4,5,6,7,8,10,12,16,20,24,28,32,40,48,60,80,120];
+ if(x.unit==="斤")return [0,.5,1,2,3,4,5,6,8,10,15,20,30];
+ if(x.id==="grass_tea")return [0,2,3,5,10,15,20,25,30,32,33,35];
+ if(x.id==="milk")return [0,5,10,15,20,25];
+ if(x.id==="passion"||x.id==="mixed_juice")return [0,5,10,15,20,25,30,35,40];
+ if(x.id==="cup700")return [0,.25,.5,.75,1,2,3,4,5];
+ if(x.unit==="桶")return [0,.25,.5,.75,1,1.25,1.5,1.75,2,2.5,3,4,5,6];
+ if(["罐","瓶","包","袋","捲"].includes(x.unit))return integer(20);
+ return [0,1,2,3,4,5,6,8,10,12,15,20];
+}
+function learningText(x){let last=lastCountEvent(x.id),samples=state.usageSamples[x.id]||[];if(!last)return "第一次盤點會建立基準；之後系統會用兩次盤點＋期間收貨反推耗用。";let t=new Date(last.ts).toLocaleString("zh-TW",{hour12:false});if(samples.length&&x.daily>0)return `上次盤點：${t}・目前學到約 ${x.daily.toFixed(2)} ${x.unit}/天`;return `上次盤點：${t}・再完成下一次盤點後開始計算耗用速度。`}
+function openCount(id){
+ current=state.items.find(x=>x.id==id);selected=current.stock;E("countName").textContent=current.name;E("countDesc").textContent=`現在實際看到多少${current.unit}？${current.note?"（"+current.note+"）":""}`;E("countLearn").textContent=learningText(current);
+ E("manualCountUnit").textContent=current.unit;E("manualCountQty").value="";
+ if(current.id==="wintermelon"){E("countChoices").classList.add("hide");E("manualCount").classList.add("hide");E("winterCount").classList.remove("hide");let total=Math.max(0,Math.round(current.stock*30));E("winterBoxes").value=Math.floor(total/30);E("winterPieces").value=total%30}
+ else{E("winterCount").classList.add("hide");E("manualCount").classList.remove("hide");E("countChoices").classList.remove("hide");drawCount();E("manualCountQty").oninput=()=>{let v=Number(E("manualCountQty").value);if(Number.isFinite(v)&&v>=0){selected=v;E("countChoices").querySelectorAll("button").forEach(z=>z.classList.remove("sel"))}}}
+ E("countModal").style.display="flex"
+}
+function drawCount(){E("countChoices").innerHTML=options(current).map(q=>`<button class="${Math.abs(q-selected)<.0001?"sel":""}" data-q="${q}">${q} ${current.unit}</button>`).join("");E("countChoices").querySelectorAll("button").forEach(b=>b.onclick=()=>{selected=Number(b.dataset.q);E("manualCountQty").value="";drawCount()})}
+function recordStructured(type,item,qty,extra={}){state.inventoryEvents.push({type,itemId:item.id,itemName:item.name,qty:Number(qty),unit:item.unit,ts:Date.now(),...extra});if(state.inventoryEvents.length>2000)state.inventoryEvents=state.inventoryEvents.slice(-2000)}
+function learnFromCount(item,newQty){
+ const prev=lastCountEvent(item.id);const now=Date.now();if(!prev)return null;
+ const daysGap=(now-prev.ts)/86400000;if(daysGap<0.5)return null;
+ const receipts=state.inventoryEvents.filter(e=>e.type==="receipt"&&e.itemId===item.id&&e.ts>prev.ts&&e.ts<=now).reduce((a,e)=>a+Number(e.qty||0),0);
+ const used=Number(prev.qty)+receipts-Number(newQty);if(used<0)return null;
+ const rate=used/daysGap;if(!Number.isFinite(rate))return null;
+ if(!state.usageSamples[item.id])state.usageSamples[item.id]=[];state.usageSamples[item.id].push({ts:now,days:daysGap,used,rate});state.usageSamples[item.id]=state.usageSamples[item.id].slice(-8);
+ const recent=state.usageSamples[item.id];const totalDays=recent.reduce((a,z)=>a+z.days,0),totalUsed=recent.reduce((a,z)=>a+z.used,0);item.daily=totalDays>0?totalUsed/totalDays:0;return {used,daysGap,rate};
+}
+E("countSave").onclick=async()=>{
+ let qty,label;
+ if(current.id==="wintermelon"){let boxes=Math.max(0,parseInt(E("winterBoxes").value)||0),pieces=Math.max(0,parseInt(E("winterPieces").value)||0);boxes+=Math.floor(pieces/30);pieces=pieces%30;qty=+(boxes+pieces/30).toFixed(4);label=`${boxes}箱${pieces}塊`}
+ else{qty=Number(selected);if(!Number.isFinite(qty)||qty<0)return alert("請輸入正確庫存數量");label=`${qty}${current.unit}`}
+ if(!cloudReady)return alert("雲端尚未連線，為避免兩台裝置資料分裂，暫不寫入。");
+ try{cloudStatus(null,"正在儲存盤點…");await pushCloudEvent("count",current,qty);closeOverlay("countModal");await refreshCloud(true);log(`盤點 ${current.name} → ${label}`);render()}
+ catch(err){cloudStatus(false,"盤點未同步");alert("盤點沒有寫入雲端："+err.message)}
+};
+const receiptCatList=["茶葉茶料","奶粉類","糖調味","飲料原料","配料","包材"];
+function drawReceiptCats(){E("receiptCats").innerHTML=receiptCatList.map(c=>`<button class="cat ${c===rCat?"on":""}" data-cat="${c}">${c}</button>`).join("");E("receiptCats").querySelectorAll("button").forEach(b=>b.onclick=()=>{rCat=b.dataset.cat;rItem=null;rQty=null;drawReceiptCats();drawReceiptItems();E("receiptQty").innerHTML="";E("receiptName").textContent="請先選品項"})}
+function drawReceiptItems(){let arr=state.items.filter(x=>x.cat===rCat);E("receiptItems").innerHTML=arr.map(x=>`<button data-id="${x.id}">${x.name}</button>`).join("");E("receiptItems").querySelectorAll("button").forEach(b=>b.onclick=()=>selectR(b.dataset.id))}
+E("receiptOpen").onclick=()=>{rItem=null;rQty=null;rCat="茶葉茶料";drawReceiptCats();drawReceiptItems();E("receiptQty").innerHTML="";E("receiptName").textContent="請先選品項";E("receiptModal").style.display="flex"};
+const receiptRules={
+  green_jasmine:[5,10,20,30],old_black:[5,10,20,30],high_mountain:[5,10,20,30],oolong_green:[5,10,20,30],golden_oolong:[5,10,20,30],ruby_black:[5,10,20,30],osmanthus:[5,10,20,30],
+  genmai_gyokuro:[1,2,3],genmai_grain:[5,10,15,20],buckwheat:[11,22,33],barley:[5,10],cassia:[5,10],
+  creamer:[1,2],milk:[10,15,20],cream:[1,2,3],cocoa:[5,10,15,20],ovaltine:[1,2,3],coffee:[10,20,30],condensed_milk:[1,2,3,4,5],
+  fructose:[2,3,4,5,6],brown_sugar:[1,2],honey:[10,20],choc_syrup:[1,2,3],mint:[1,2,3],wintermelon:[1,2,3],
+  pineapple:[1,2,3,4,5,6,7,8],roselle:[10,20],plum_juice:[1,2],ganmei:[1,2,3,4,5,6],grass_jelly_juice:[1,2,3,4,5],grass_tea:[30],
+  kanten:[1,2,3,4,5,6,7,8],coffee_jelly:[1,2],coconut_jelly:[1,2,3],black_pearl:Array.from({length:10},(_,i)=>i+1),white_pearl:Array.from({length:10},(_,i)=>i+1),plum_piece:[1,2,3],
+  cup700:[1,2,3,4],film:[1,2,3,4,5],straw_thick:[1,2],straw_thin:[1,2],bag1:Array.from({length:20},(_,i)=>i+1),bag2:Array.from({length:20},(_,i)=>i+1),bag4:Array.from({length:20},(_,i)=>i+1),bag6:Array.from({length:20},(_,i)=>i+1)
+};
+function selectR(id){rItem=state.items.find(x=>x.id==id);rQty=null;let qs=receiptRules[rItem.id]||[1,2,3];let isTeaPack=teaPackIds.has(rItem.id),displayUnit=isTeaPack?"斤":rItem.unit;E("receiptName").textContent=isTeaPack?`${rItem.name}・供應商收貨用斤（1斤＝4包）`:`${rItem.name}・收到幾${displayUnit}？`;let quick="";if(rItem.id==="passion"||rItem.id==="mixed_juice"){E("receiptName").textContent=`${rItem.name}・1箱＝20罐`;quick=`<button data-q="20">1箱（20罐）</button>`}else if(isTeaPack){quick=qs.map(q=>`<button data-q="${q*4}" data-source="${q}">${q}斤 → ${q*4}包</button>`).join("")}else{quick=qs.map(q=>`<button data-q="${q}">${q} ${displayUnit}</button>`).join("")}E("receiptQty").innerHTML=quick+`<div class="manual-receipt"><div class="muted" style="margin-bottom:7px">或手動輸入${isTeaPack?"收貨斤數":"數量"}</div><div class="manual-row"><input id="manualReceiptQty" type="number" min="0" step="0.01" inputmode="decimal" placeholder="輸入數量"><span>${displayUnit}</span></div>${isTeaPack?'<div class="muted" id="teaConvertHint" style="margin-top:6px">輸入斤數後自動換算成包入庫</div>':""}</div>`;E("receiptQty").querySelectorAll("button[data-q]").forEach(b=>b.onclick=()=>{rQty=Number(b.dataset.q);E("receiptQty").querySelectorAll("button[data-q]").forEach(z=>z.classList.remove("sel"));b.classList.add("sel");let i=E("manualReceiptQty");if(i)i.value=""});E("manualReceiptQty").oninput=()=>{let v=Number(E("manualReceiptQty").value);rQty=v>0?(isTeaPack?v*4:v):null;let h=E("teaConvertHint");if(h&&v>0)h.textContent=`${v}斤 ＝ ${v*4}包，確認後以包入庫`;E("receiptQty").querySelectorAll("button[data-q]").forEach(z=>z.classList.remove("sel"))}}
+E("receiptSave").onclick=async()=>{if(!rItem||!rQty)return alert("請先選品項與數量");if(!cloudReady)return alert("雲端尚未連線，為避免資料分裂，暫不寫入。");try{cloudStatus(null,"正在儲存收貨…");await pushCloudEvent("receipt",rItem,rQty);closeOverlay("receiptModal");await refreshCloud(true);log(teaPackIds.has(rItem.id)?`收貨 ${rItem.name} +${rQty/4}斤（${rQty}包）`:`收貨 ${rItem.name} +${rQty}${rItem.unit}`);render()}catch(err){cloudStatus(false,"收貨未同步");alert("收貨沒有寫入雲端："+err.message)}};
+
+function pick(){E("photoInput").value="";E("photoInput").click()}E("choosePhoto").onclick=pick;E("changePhoto").onclick=pick;
+E("photoInput").onchange=e=>{let f=e.target.files&&e.target.files[0];if(!f)return;if(objUrl)URL.revokeObjectURL(objUrl);objUrl=URL.createObjectURL(f);E("preview").innerHTML="<img>";E("preview").querySelector("img").src=objUrl;E("choosePhoto").classList.add("hide");E("photoConfirm").classList.remove("hide");E("recognizeArea").classList.add("hide");E("ocrResult").classList.add("hide")};
+E("confirmPhoto").onclick=()=>{E("photoConfirm").classList.add("hide");E("recognizeArea").classList.remove("hide")};
+E("recognizeBtn").onclick=()=>{let a=[["高山青",2,"斤","green"],["古早紅",1,"斤","green"],["700ml 紙杯",2,"箱","warn"]];E("ocrLines").innerHTML=a.map((x,i)=>`<div class="ocrline"><input id="on${i}" value="${x[0]}"><input id="oq${i}" type="number" value="${x[1]}"><div class="badge ${x[3]}">${x[3]=="warn"?"確認":"高"}</div><input id="ou${i}" value="${x[2]}" hidden></div>`).join("");E("ocrResult").classList.remove("hide");E("ocrResult").scrollIntoView({behavior:"smooth"})};
+E("ocrSave").onclick=()=>alert("拍單辨識目前仍是示範模式，V9.5 不會把示範資料寫進正式雲端。請先用手動收貨。");
+function backupPayload(){return {format:"qilixiang-inventory-backup",schemaVersion:SCHEMA_VERSION,appVersion:"9.6",exportedAt:new Date().toISOString(),state}}
+function safeStamp(){let d=new Date(),p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}`}
+function downloadBackup(prefix="七里香庫存備份"){let blob=new Blob([JSON.stringify(backupPayload(),null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`${prefix}_${safeStamp()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function dataSummary(){let counts=state.inventoryEvents.filter(e=>e.type==="count").length,receipts=state.inventoryEvents.filter(e=>e.type==="receipt").length,est=state.items.filter(isEstablished).length;E("dataSummary").innerHTML=`已建立庫存基準：<b>${est}/47 項</b><br>完整盤點事件：<b>${counts}</b>・收貨事件：<b>${receipts}</b><br>資料版本：${state.schemaVersion||1}・App V${state.appVersion||"9.6"}`}
+
+
+E("orderOpen").onclick=openOrderList;
+E("orderClose").onclick=()=>E("orderModal").style.display="none";
+E("orderAddBtn").onclick=()=>{const id=E("orderAddItem").value;if(id&&!orderIds.includes(id)){orderIds.push(id);renderOrderList()}};
+E("orderCopyBtn").onclick=async()=>{const t=orderText();if(!t)return alert("請先輸入至少一個叫貨數量。");try{await navigator.clipboard.writeText(t);alert("叫貨文字已複製。")}catch(e){alert(t)}};
+E("orderLineBtn").onclick=()=>{const t=orderText();if(!t)return alert("請先輸入至少一個叫貨數量。");location.href="https://line.me/R/msg/text/?"+encodeURIComponent(t)};
+E("safetyOpen").onclick=()=>{renderSafety();E("safetyModal").style.display="flex"};
+E("safetyClose").onclick=()=>{E("safetyModal").style.display="none"};
+E("dataOpen").onclick=()=>{dataSummary();E("dataModal").style.display="flex"};
+E("backupBtn").onclick=()=>{downloadBackup();alert("完整備份已匯出。請保留這個 JSON 檔。")};
+E("restoreBtn").onclick=()=>{E("restoreInput").value="";E("restoreInput").click()};
+E("refreshCloudBtn").onclick=()=>refreshCloud();
+E("uploadLocalBtn").onclick=async()=>{
+ if(!cloudReady)return alert("請先確認雲端已連線。");
+ const localEvents=[...state.inventoryEvents];
+ if(!localEvents.length)return alert("這個瀏覽器目前沒有可上傳的盤點／收貨紀錄。");
+ let existing=await cloudFetch("inventory_events?select=id&limit=1");
+ if(existing.length&&!confirm("雲端已經有庫存事件。繼續上傳可能造成重複資料。確定仍要繼續嗎？"))return;
+ if(!confirm(`準備把目前瀏覽器的 ${localEvents.length} 筆既有事件上傳雲端。\n請確認這一台就是你要保留的基準資料。`))return;
+ try{
+   cloudStatus(null,"正在上傳本機資料…");
+   for(const ev of localEvents){
+     if(!["count","receipt"].includes(ev.type))continue;
+     const item=state.items.find(x=>x.id===ev.itemId);if(!item)continue;
+     const ci=cloudItemByLocalId.get(item.id);if(!ci)continue;
+     const body={item_id:ci.id,event_type:ev.type,quantity:Number(ev.qty),unit:item.unit,occurred_at:new Date(ev.ts||Date.now()).toISOString(),source:"local-migration"};
+     await cloudFetch("inventory_events",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify(body)});
+   }
+   await refreshCloud(true);alert("本機既有盤點／收貨紀錄已上傳雲端。");
+ }catch(err){cloudStatus(false,"上傳失敗");alert("上傳失敗："+err.message)}
+};
+
+E("restoreInput").onchange=async e=>{let f=e.target.files&&e.target.files[0];if(!f)return;try{let raw=JSON.parse(await f.text());if(raw.format!=="qilixiang-inventory-backup"||!raw.state||!Array.isArray(raw.state.items))throw new Error("格式不符");let incoming=migrateTeaUnits(raw.state);let ids=new Set(incoming.items.map(x=>x.id));let missing=defaults.filter(d=>!ids.has(d.id));if(missing.length)throw new Error(`備份缺少 ${missing.length} 個主檔品項`);if(!confirm(`要還原「${f.name}」嗎？\n還原前會先下載目前資料的救援備份。`))return;downloadBackup("還原前救援備份");const byId=new Map(incoming.items.map(x=>[x.id,x]));incoming.items=defaults.map(d=>({...d,...byId.get(d.id),cat:d.cat,unit:d.unit}));if(!Array.isArray(incoming.inventoryEvents))incoming.inventoryEvents=[];if(!incoming.usageSamples||typeof incoming.usageSamples!=="object")incoming.usageSamples={};if(!Array.isArray(incoming.events))incoming.events=[];incoming.schemaVersion=SCHEMA_VERSION;incoming.appVersion="9.6";state=incoming;save();dataSummary();render();alert("資料已還原完成。") }catch(err){alert("無法還原："+err.message)}};
+render();
+refreshCloud();
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refreshCloud(true)});
+})();
+
+</script></body></html>
